@@ -1,7 +1,6 @@
 /*
     Este Script funciona para crear la base de datos de FideGameStore
 */
-
 -- Sección de administración 
 drop database if exists fidegamestore;
 drop user if exists usuario_admin;
@@ -89,6 +88,7 @@ create table estado_orden (
 -- Tabla de usuarios
 CREATE TABLE usuario (
   id_usuario INT NOT NULL AUTO_INCREMENT,
+  id_rol INT NOT NULL,
   username varchar(30) NOT NULL UNIQUE,
   password varchar(512) NOT NULL,
   correo VARCHAR(75) NULL UNIQUE,
@@ -98,7 +98,8 @@ CREATE TABLE usuario (
   fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_usuario`),
   CHECK (correo REGEXP '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'),
-  index ndx_username (username))
+  index ndx_username (username),
+  foreign key fk_usuario_rol (id_rol) references rol(id_rol))
   ENGINE = InnoDB;
 
 -- Tabla de productos
@@ -219,10 +220,10 @@ INSERT INTO estado_ticket (estado_ticket, activo) VALUES
 ('Abierto',true),
 ('Cerrado',true);
 
-INSERT INTO usuario (username, password, correo, ruta_imagen, activo) VALUES 
-('Admin', '123', 'admin@fidegamestore.com', 'imagen', true),
-('Soporte', '123', 'soporte@fidegamestore.com', 'imagen', true),
-('usuario1', '123', 'usuario@gmail.com', 'imagen', true);
+INSERT INTO usuario (id_rol, username, password, correo, ruta_imagen, activo) VALUES 
+(1, 'Admin', '123', 'admin@fidegamestore.com', 'imagen', true),
+(2, 'Soporte', '123', 'soporte@fidegamestore.com', 'imagen', true),
+(3, 'usuario1', '123', 'usuario@gmail.com', 'imagen', true);
 
 INSERT INTO producto (id_categoria, nombre, ruta_imagen, activo) VALUES
 (1, 'Minecraft', 'imagen', true),
