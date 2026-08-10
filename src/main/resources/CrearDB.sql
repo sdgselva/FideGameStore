@@ -35,6 +35,30 @@ create table categoria (
   index ndx_categoria (categoria))
   ENGINE = InnoDB;
 
+-- Tabla de rutas
+create table ruta (
+  id_ruta INT NOT NULL AUTO_INCREMENT,
+  ruta VARCHAR(150) NOT NULL,
+  requiere_rol boolean,
+  id_rol INT,
+  fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id_ruta),
+  unique (ruta),
+  index ndx_id_rol (id_rol))
+  ENGINE = InnoDB;
+
+create table constante (
+  id_constante INT NOT NULL AUTO_INCREMENT,
+  atributo VARCHAR(50) NOT NULL,
+  valor VARCHAR(100) NOT NULL,
+  fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id_constante),
+  unique (atributo),
+  index ndx_atributo (atributo))
+  ENGINE = InnoDB;
+
 -- Tabla de roles
 create table rol (
   id_rol INT NOT NULL AUTO_INCREMENT,
@@ -88,7 +112,6 @@ create table estado_orden (
 -- Tabla de usuarios
 CREATE TABLE usuario (
   id_usuario INT NOT NULL AUTO_INCREMENT,
-  id_rol INT NOT NULL,
   username varchar(30) NOT NULL UNIQUE,
   password varchar(512) NOT NULL,
   correo VARCHAR(75) NULL UNIQUE,
@@ -98,8 +121,19 @@ CREATE TABLE usuario (
   fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_usuario`),
   CHECK (correo REGEXP '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'),
-  index ndx_username (username),
-  foreign key fk_usuario_rol (id_rol) references rol(id_rol))
+  index ndx_username (username))
+  ENGINE = InnoDB;
+
+-- Tabla de roles de usuario
+create table usuario_rol (
+  id_usuario_rol INT NOT NULL AUTO_INCREMENT,
+  id_usuario INT NOT NULL,
+  id_rol INT NOT NULL,
+  fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id_usuario_rol),
+  foreign key fk_usuario_rol_usuario (id_usuario) references usuario(id_usuario),
+  foreign key fk_usuario_rol_rol (id_rol) references rol(id_rol))
   ENGINE = InnoDB;
 
 -- Tabla de productos
@@ -220,10 +254,18 @@ INSERT INTO estado_ticket (estado_ticket, activo) VALUES
 ('Abierto',true),
 ('Cerrado',true);
 
-INSERT INTO usuario (id_rol, username, password, correo, ruta_imagen, activo) VALUES 
-(1, 'Admin', '123', 'admin@fidegamestore.com', 'imagen', true),
-(2, 'Soporte', '123', 'soporte@fidegamestore.com', 'imagen', true),
-(3, 'usuario1', '123', 'usuario@gmail.com', 'imagen', true);
+INSERT INTO usuario (username, password, correo, ruta_imagen, activo) VALUES 
+('Admin', '123', 'admin@fidegamestore.com', 'imagen', true),
+('Soporte', '123', 'soporte@fidegamestore.com', 'imagen', true),
+('usuario1', '123', 'usuario@gmail.com', 'imagen', true);
+
+INSERT INTO usuario_rol (id_usuario, id_rol) VALUES 
+(1, 1),
+(1, 2),
+(1, 3),
+(2, 2),
+(2, 3),
+(3, 3);
 
 INSERT INTO producto (id_categoria, nombre, ruta_imagen, activo) VALUES
 (1, 'Minecraft', 'imagen', true),
@@ -266,3 +308,9 @@ INSERT INTO orden_llave (id_orden, id_llave, precio_pagado) VALUES
 
 INSERT INTO ticket (id_orden, id_estado_ticket, descripcion) VALUES
 (2, 1, 'Intente usar la tarjeta de regalo en mi consola de Play Station pero no funciono');
+
+INSERT INTO ruta (ruta, requiere_rol, id_rol) VALUES
+('/index', 0, 0);
+
+INSERT INTO constante (atributo, valor) VALUES
+('Tipo de cambio dolar', '443.00');
