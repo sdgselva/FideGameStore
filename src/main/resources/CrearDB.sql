@@ -255,9 +255,9 @@ INSERT INTO estado_ticket (estado_ticket, activo) VALUES
 ('Cerrado',true);
 
 INSERT INTO usuario (username, password, correo, ruta_imagen, activo) VALUES 
-('Admin', '123', 'admin@fidegamestore.com', 'imagen', true),
-('Soporte', '123', 'soporte@fidegamestore.com', 'imagen', true),
-('usuario1', '123', 'usuario@gmail.com', 'imagen', true);
+('Admin', '$2a$10$P1.w58XvnaYQUQgZUCk4aO/RTRl8EValluCqB3S2VMLTbRt.tlre.', 'admin@fidegamestore.com', 'imagen', true),
+('Soporte', '$2a$10$P1.w58XvnaYQUQgZUCk4aO/RTRl8EValluCqB3S2VMLTbRt.tlre.', 'soporte@fidegamestore.com', 'imagen', true),
+('usuario1', '$2a$10$P1.w58XvnaYQUQgZUCk4aO/RTRl8EValluCqB3S2VMLTbRt.tlre.', 'usuario@gmail.com', 'imagen', true);
 
 INSERT INTO usuario_rol (id_usuario, id_rol) VALUES 
 (1, 1),

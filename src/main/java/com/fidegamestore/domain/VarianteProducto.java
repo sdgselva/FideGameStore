@@ -1,11 +1,7 @@
 package com.fidegamestore.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import lombok.Data;
 
 @Data
