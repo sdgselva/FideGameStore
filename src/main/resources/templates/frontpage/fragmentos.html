@@ -51,7 +51,7 @@
                         </div>
                         <div class="card-footer bg-white d-flex justify-content-between align-items-center">
                             <form th:action="@{/carrito/agregar}" th:method="POST" class="d-inline">
-                                <input type="hidden" th:value="${a.varianteProducto.idVarianteProducto}" name="idVarianteProducto"/>
+                                <input type="hidden" th:value="${a.idAnuncio}" name="idAnuncio"/>
                                 <button type="button" 
                                         class="btn btn-sm btn-primary" 
                                         onclick="addCart(this.form)">

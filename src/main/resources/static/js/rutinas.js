@@ -4,7 +4,7 @@
  */
 function addCart(formulario) {
     // 1. Obtención de datos y ruta (solo el ID del producto)
-    var idProducto = $(formulario).find('input[name="idProducto"]').val();
+    var idAnuncio = $(formulario).find('input[name="idAnuncio"]').val();
     var ruta = $(formulario).attr('action') || '/carrito/agregar'; // Lee la ruta del atributo 'action'
 
     // 2. Seguridad (CSRF Token)
@@ -16,8 +16,8 @@ function addCart(formulario) {
         url: ruta,
         type: 'POST',
         data: {
-            // ** CRÍTICO: SOLO ENVIAMOS idProducto **
-            idProducto: idProducto
+            // ** CRÍTICO: SOLO ENVIAMOS idAnuncio **
+            idAnuncio: idAnuncio
         },
         beforeSend: function (xhr) {
             if (csrfHeader && csrfToken) {

@@ -177,6 +177,7 @@ CREATE TABLE anuncio (
   id_anuncio INT NOT NULL AUTO_INCREMENT,
   id_variante_producto INT NOT NULL,
   precio decimal(12,2) check (precio>= 0),
+  existencias int default 1,
   activo boolean,
   fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -268,11 +269,11 @@ INSERT INTO usuario_rol (id_usuario, id_rol) VALUES
 (3, 3);
 
 INSERT INTO producto (id_categoria, nombre_producto, ruta_imagen, activo) VALUES
-(1, 'Minecraft', 'imagen', true),
-(2, 'PSN $10 Gift Card', 'imagen', true),
-(1, 'Stardew Valley', 'imagen', true),
-(1, 'Doom Eternal', 'imagen', true),
-(2, 'Steam Wallet $50 Gift Card', 'imagen', true);
+(1, 'Minecraft', 'https://imgproxy.eneba.games/HFctKs2s7yb7zhAs0t_IixbCiF7Ewpe_gj15SCBhQMY/rs:fit:300/ar:1/czM6Ly9wcm9kdWN0/cy5lbmViYS5nYW1l/cy9wcm9kdWN0cy93/NV9aR2wxaHJ2Unpu/THpTVlhUZW4yUjlZ/eE5SRkd3M0JZUk5Q/UlRQejJFLnBuZw', true),
+(2, 'PSN $10 Gift Card', 'https://imgproxy.eneba.games/wfA5CzqqZHisDwAbqmMfCVgObLcu6DZl64U58etBVOA/rs:fit:300/ar:1/czM6Ly9wcm9kdWN0/cy5lbmViYS5nYW1l/cy9wcm9kdWN0cy9H/bTdFOHg3M2hPWkhO/QUFYTWYyYmNnbVpf/T1ctaGI4RDdFTGFP/YzhaWXJ3LmpwZw', true),
+(1, 'Stardew Valley', 'https://imgproxy.eneba.games/IEyi7e4SgKDdNTpwOl1pj2tecPxJNBW9b9-I8TaTmRs/rs:fit:300/ar:1/czM6Ly9wcm9kdWN0/cy5lbmViYS5nYW1l/cy9wcm9kdWN0cy94/cnBteWRudTlycHh2/eGZqa2l1Ny5qcGc', true),
+(1, 'Doom Eternal', 'https://imgproxy.eneba.games/pQh-bQaRJ91XPQ_VDmGszXnlHDy6dgfYZidwUQExxuk/rs:fit:300/ar:1/czM6Ly9wcm9kdWN0/cy5lbmViYS5nYW1l/cy9wcm9kdWN0cy9T/VGl4MGZOMDlEdVM2/blVHSXpYMm9Nek5f/SVZySU9LS3REZC1L/YWN0ak13LmpwZWc', true),
+(2, 'Steam Wallet $50 Gift Card', 'https://imgproxy.eneba.games/-p8pcSxTQfuTnvjNiI9cQmYvI31g6ipRNoKbAG622gk/rs:fit:300/ar:1/czM6Ly9wcm9kdWN0/cy5lbmViYS5nYW1l/cy9wcm9kdWN0cy9l/MC1Odk9FeFlpMXdh/NkNFTk5ndzFZeEc3/SWVKZHJzSGRIekw0/dV9DVkkwLmpwZWc', true);
 
 INSERT INTO variante_producto (id_producto, id_region, id_plataforma) VALUES
 (1, 1, 5),

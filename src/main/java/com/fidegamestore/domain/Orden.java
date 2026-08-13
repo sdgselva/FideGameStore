@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import lombok.Data;
 
@@ -29,4 +30,7 @@ public class Orden implements Serializable {
     private EstadoOrden estadoOrden;
     
     private BigDecimal precioTotal;
+    
+    @OneToMany(mappedBy = "orden", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrdenLlave> ordenLlaves;
 }

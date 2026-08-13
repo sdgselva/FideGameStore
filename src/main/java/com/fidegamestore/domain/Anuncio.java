@@ -22,6 +22,8 @@ public class Anuncio implements Serializable  {
     @JoinColumn(name = "id_variante_producto")
     private VarianteProducto varianteProducto;
     
+    private Integer existencias;
+    
     private BigDecimal precio;
     
     private boolean activo;
