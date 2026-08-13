@@ -25,7 +25,7 @@ public class Plataforma implements Serializable {
     @Column(unique = true, nullable = false, length = 50)
     @NotNull
     @Size(max = 50)
-    private String plataforma;
+    private String nombrePlataforma;
     
     @Column(name = "activo")
     private Boolean activo;

@@ -28,23 +28,23 @@ use fidegamestore;
 -- Tabla de categorías
 create table categoria (
   id_categoria INT NOT NULL AUTO_INCREMENT,
-  categoria VARCHAR(50) NOT NULL,
+  nombre_categoria VARCHAR(50) NOT NULL,
   activo boolean,
   PRIMARY KEY (id_categoria),
-  unique (categoria),
-  index ndx_categoria (categoria))
+  unique (nombre_categoria),
+  index ndx_nombre_categoria (nombre_categoria))
   ENGINE = InnoDB;
 
 -- Tabla de rutas
 create table ruta (
   id_ruta INT NOT NULL AUTO_INCREMENT,
-  ruta VARCHAR(150) NOT NULL,
+  nombre_ruta VARCHAR(150) NOT NULL,
   requiere_rol boolean,
   id_rol INT,
   fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_ruta),
-  unique (ruta),
+  unique (nombre_ruta),
   index ndx_id_rol (id_rol))
   ENGINE = InnoDB;
 
@@ -62,31 +62,31 @@ create table constante (
 -- Tabla de roles
 create table rol (
   id_rol INT NOT NULL AUTO_INCREMENT,
-  rol VARCHAR(50) NOT NULL,
+  nombre_rol VARCHAR(50) NOT NULL,
   activo boolean,
   PRIMARY KEY (id_rol),
-  unique (rol),
-  index ndx_rol (rol))
+  unique (nombre_rol),
+  index ndx_nombre_rol (nombre_rol))
   ENGINE = InnoDB;
 
 -- Tabla de plataformas
 create table plataforma (
   id_plataforma INT NOT NULL AUTO_INCREMENT,
-  plataforma VARCHAR(50) NOT NULL,
+  nombre_plataforma VARCHAR(50) NOT NULL,
   activo boolean,
   PRIMARY KEY (id_plataforma),
-  unique (plataforma),
-  index ndx_plataforma (plataforma))
+  unique (nombre_plataforma),
+  index ndx_nombre_plataforma(nombre_plataforma))
   ENGINE = InnoDB;
 
 -- Tabla de regiones
 create table region (
   id_region INT NOT NULL AUTO_INCREMENT,
-  region VARCHAR(50) NOT NULL,
+  nombre_region VARCHAR(50) NOT NULL,
   activo boolean,
   PRIMARY KEY (id_region),
-  unique (region),
-  index ndx_region (region))
+  unique (nombre_region),
+  index ndx_nombre_region (nombre_region))
   ENGINE = InnoDB;
 
 -- Tabla de estatus de tickets
@@ -140,12 +140,12 @@ create table usuario_rol (
 create table producto (
   id_producto INT NOT NULL AUTO_INCREMENT,
   id_categoria INT NOT NULL,
-  nombre VARCHAR(50) NOT NULL,  
+  nombre_producto VARCHAR(50) NOT NULL,  
   ruta_imagen varchar(1024),
   activo boolean,
   PRIMARY KEY (id_producto),
-  unique (nombre),
-  index ndx_nombre (nombre),
+  unique (nombre_producto),
+  index ndx_nombre (nombre_producto),
   foreign key fk_producto_categoria (id_categoria) references categoria(id_categoria))
   ENGINE = InnoDB;
 
@@ -227,23 +227,23 @@ CREATE TABLE ticket (
 -- --- Sección de Inserción de Datos ---
 
 
-INSERT INTO categoria (categoria, activo) VALUES 
+INSERT INTO categoria (nombre_categoria, activo) VALUES 
 ('Juego',true),
 ('Tarjeta de Regalo',true);
 
-INSERT INTO rol (rol, activo) VALUES 
+INSERT INTO rol (nombre_rol, activo) VALUES 
 ('Administrador',true),
 ('Soporte',true),
 ('Usuario',true);
 
-INSERT INTO plataforma (plataforma, activo) VALUES 
+INSERT INTO plataforma (nombre_plataforma, activo) VALUES 
 ('Todas las plataformas',true),
 ('Nintendo',true),
 ('Steam',true),
 ('PlayStation',true),
 ('Xbox',true);
 
-INSERT INTO region (region, activo) VALUES 
+INSERT INTO region (nombre_region, activo) VALUES 
 ('Global',true),
 ('Norteamerica',true),
 ('Suramerica',true),
@@ -267,7 +267,7 @@ INSERT INTO usuario_rol (id_usuario, id_rol) VALUES
 (2, 3),
 (3, 3);
 
-INSERT INTO producto (id_categoria, nombre, ruta_imagen, activo) VALUES
+INSERT INTO producto (id_categoria, nombre_producto, ruta_imagen, activo) VALUES
 (1, 'Minecraft', 'imagen', true),
 (2, 'PSN $10 Gift Card', 'imagen', true),
 (1, 'Stardew Valley', 'imagen', true),
@@ -309,8 +309,18 @@ INSERT INTO orden_llave (id_orden, id_llave, precio_pagado) VALUES
 INSERT INTO ticket (id_orden, id_estado_ticket, descripcion) VALUES
 (2, 1, 'Intente usar la tarjeta de regalo en mi consola de Play Station pero no funciono');
 
-INSERT INTO ruta (ruta, requiere_rol, id_rol) VALUES
-('/index', 0, 0);
+-- Rutas que NO requieren rol
+INSERT INTO ruta (nombre_ruta, requiere_rol) VALUES
+('/',false),
+('/index',false),
+('/errores/**',false),
+('/carrito/**',false),
+('/registro/**',false),
+('/403',false),
+('/fav/**',false),
+('/js/**',false),
+('/css/**',false),
+('/webjars/**',false);
 
 INSERT INTO constante (atributo, valor) VALUES
 ('Tipo de cambio dolar', '443.00');

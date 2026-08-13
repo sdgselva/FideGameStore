@@ -149,7 +149,7 @@ public class UsuarioService {
             throw new RuntimeException("Usuario no encontrado: " + username);
         }
         Usuario usuario = usuarioOpt.get();
-        Optional<Rol> rolOpt = rolRepository.findByRol(rolStr);
+        Optional<Rol> rolOpt = rolRepository.findByNombreRol(rolStr);
         if (rolOpt.isEmpty()) {
             throw new RuntimeException("Rol no encontrado.");
         }
@@ -162,7 +162,7 @@ public class UsuarioService {
     public List<String> getRolesNombres() {
         // Retorna una lista de Strings con el nombre de cada rol
         return rolRepository.findAll().stream()
-                .map(Rol::getRol)
+                .map(Rol::getNombreRol)
                 .toList();
     }
     

@@ -8,6 +8,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface RolRepository extends JpaRepository<Rol, Integer>  {
     @Query(nativeQuery = true,
-        value = "SELECT * from rol r WHERE r.rol = :rol ;")
-     public Optional<Rol> findByRol(@Param("rol") String rol);
+        value = "SELECT * from rol r WHERE r.nombre_rol = :nombreRol ;")
+     public Optional<Rol> findByNombreRol(@Param("nombreRol") String nombreRol);
 }

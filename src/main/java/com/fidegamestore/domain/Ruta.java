@@ -15,8 +15,10 @@ public class Ruta implements Serializable {
     @Column(name = "id_ruta")
     private Integer idRuta;
     
-    private String ruta;
+    @Column(name="nombre_ruta", unique = true, nullable = false)
+    private String nombreRuta;
     
+    @Column(name="requiere_rol")
     private boolean requiereRol;
     
     @ManyToOne(fetch = FetchType.EAGER)

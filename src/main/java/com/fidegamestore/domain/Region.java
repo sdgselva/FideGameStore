@@ -25,7 +25,7 @@ public class Region implements Serializable {
     @Column(unique = true, nullable = false, length = 50)
     @NotNull
     @Size(max = 50)
-    private String region;
+    private String nombreRegion;
     
     @Column(name = "activo")
     private Boolean activo;

@@ -26,9 +26,9 @@ public class SecurityConfig {
         http.authorizeHttpRequests(requests -> {
             for (Ruta ruta : rutas) {
                 if (ruta.isRequiereRol()) {
-                    requests.requestMatchers(ruta.getRuta()).hasRole(ruta.getRol().getRol());
+                    requests.requestMatchers(ruta.getNombreRuta()).hasRole(ruta.getRol().getNombreRol());
                 } else {
-                    requests.requestMatchers(ruta.getRuta()).permitAll();
+                    requests.requestMatchers(ruta.getNombreRuta()).permitAll();
                 }
             }
             requests.anyRequest().authenticated();

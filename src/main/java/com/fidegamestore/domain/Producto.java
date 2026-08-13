@@ -25,7 +25,7 @@ public class Producto implements Serializable {
     
     @NotBlank
     @Column(unique = true, length = 50)
-    private String nombre;
+    private String nombreProducto;
     
     @Column(length = 1024)
     private String rutaImagen;

@@ -33,7 +33,7 @@ public class CategoriaService {
     }
     
     @Transactional
-    public void save(Categoria categoria, MultipartFile imagenFile) {
+    public void save(Categoria categoria) {
         categoria = categoriaRepository.save(categoria);
     }
 

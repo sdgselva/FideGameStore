@@ -20,7 +20,7 @@
                         <a th:href="@{/consultas/{id}(id=${c.idCategoria})}"
                            th:classappend="${idCategoriaActual != null and idCategoriaActual.equals(c.idCategoria)} ? 'active'"
                            class="nav-link">
-                            [[${c.categoria}]]
+                            [[${c.nombreCategoria}]]
                         </a>
                     </li>
                 </ul>
@@ -34,17 +34,17 @@
                     <div class="card h-100 shadow-sm">
                         <div class="d-flex justify-content-center align-items-center bg-light p-3" style="height: 200px;">
                             <img th:src="${a.varianteProducto.producto.rutaImagen}" class="img-fluid" 
-                                 th:alt="${a.varianteProducto.producto.nombre}" 
+                                 th:alt="${a.varianteProducto.producto.nombreProducto}" 
                                  style="max-height: 100%; object-fit: contain;"/>
                         </div>
                         <div class="card-header bg-white">
-                            <h5 class="card-title text-center text-truncate mb-0" th:text="${a.varianteProducto.producto.nombre}">Nombre</h5>
+                            <h5 class="card-title text-center text-truncate mb-0" th:text="${a.varianteProducto.producto.nombreProducto}">Nombre</h5>
                         </div>
                         <div class="card-body d-flex flex-column">
-                            <p class="card-text text-muted mb-auto text-truncate" th:text="${a.varianteProducto.region.region}">Region</p>
+                            <p class="card-text text-muted mb-auto text-truncate" th:text="${a.varianteProducto.region.nombreRegion}">Region</p>
                         </div>
                         <div class="card-body d-flex flex-column">
-                            <p class="card-text text-muted mb-auto text-truncate" th:text="${a.varianteProducto.plataforma.plataforma}">Plataforma</p>
+                            <p class="card-text text-muted mb-auto text-truncate" th:text="${a.varianteProducto.plataforma.nombrePlataforma}">Plataforma</p>
                         </div>
                         <div class="card-body d-flex flex-column">
                             <p class="card-text text-muted mb-auto text-truncate" th:text="${a.precio}">Precio</p>

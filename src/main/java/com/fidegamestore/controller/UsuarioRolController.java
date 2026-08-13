@@ -19,13 +19,13 @@ public class UsuarioRolController {
     private UsuarioService usuarioService;
 
     // 1. Endpoint para la vista inicial (sin usuario)
-    @GetMapping("/mantenimiento")
-    public String mantenimiento(Model model) {
+    @GetMapping("/listado")
+    public String listado(Model model) {
         model.addAttribute("usuario", new Usuario());
         // Se inicializan listas vacías para evitar errores de Thymeleaf
         model.addAttribute("rolesAsignados", Collections.emptySet());
         model.addAttribute("rolesDisponibles", Collections.emptyList());
-        return "usuario_rol/mantenimiento";
+        return "usuario_rol/listado";
     }
 
     // 2. Endpoint para buscar y mostrar roles
@@ -43,14 +43,14 @@ public class UsuarioRolController {
             // Filtrar los roles disponibles (los que no tiene el usuario)
             List<String> rolesDisponibles = todosRolesNombres.stream()
                 .filter(rolNombre -> usuario.getRoles().stream()
-                        .noneMatch(rolAsignado -> rolAsignado.getRol().equals(rolNombre)))
+                        .noneMatch(rolAsignado -> rolAsignado.getNombreRol().equals(rolNombre)))
                 .toList();
             
             model.addAttribute("rolesAsignados", usuario.getRoles());
             model.addAttribute("rolesDisponibles", rolesDisponibles);
         }
 
-        return "usuario_rol/mantenimiento"; // Vuelve a la misma página
+        return "usuario_rol/listado"; // Vuelve a la misma página
     }
 
     // 3. Endpoint para agregar un rol
