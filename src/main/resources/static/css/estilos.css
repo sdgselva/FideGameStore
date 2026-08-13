@@ -1,0 +1,10 @@
+.action-buttons {
+    opacity: 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+tr:hover .action-buttons {
+    opacity: 1;
+}
