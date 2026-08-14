@@ -1,14 +1,5 @@
 <!-- fragmento 1 para Agregar plataforma en ventana modal -->
 <section th:fragment="agregar">
-    <!-- Button trigger modal -->
-    <div class='row py-4 mb-2 bg-light'>
-        <div class='col-md-1'></div>
-        <div class='col-md-3'>
-            <button type="button" class="btn btn-primary"  sec:authorize="hasRole('ROLE_Administrador')"
-                    data-bs-toggle="modal" data-bs-target="#agregarPlataformaModal">
-                <i class="fa-solid fa-plus"></i> [[#{plataforma.agregar}]]</button>
-        </div>
-    </div>
     <!-- Modal -->
     <div class="modal fade" id="agregarPlataformaModal"  tabindex="-1" 
          aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -44,13 +35,15 @@
 <!-- fragmento 2 para el listado de plataformas -->
 <section th:fragment="listado" class="p-3">
 
-    <!-- Total de plataformas -->
-    <div class="row mb-3">
-        <div class="col-12">
-            <div class="card text-center bg-success text-white">
-                <div class="card-body py-2">
-                    <div class="d-flex justify-content-between align-items-center px-3">
+<!-- Total de plataformas + Agregar -->
+<div class="row mb-3">
+    <div class="col-12">
+        <div class="card text-center total-plataformas">
+            <div class="card-body py-2">
+                <div class="d-flex justify-content-between align-items-center px-3">
 
+                    <!-- Total -->
+                    <div class="d-flex align-items-center gap-2">
                         <h5 class="mb-0">
                             [[#{plataforma.total}]]
                         </h5>
@@ -59,27 +52,40 @@
                             <i class="fas fa-layer-group"></i>
                             [[${totalPlataformas}]]
                         </h4>
-
                     </div>
+
+                    <!-- Agregar -->
+                    <button type="button"
+                            class="btn btn-light"
+                            sec:authorize="hasRole('ROLE_Administrador')"
+                            data-bs-toggle="modal"
+                            data-bs-target="#agregarPlataformaModal">
+
+                        <i class="fa-solid fa-plus"></i>
+                        [[#{plataforma.agregar}]]
+
+                    </button>
+
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 
-    <!-- Tabla -->
-    <div class="row">
-        <div class="col-12">
+<!-- Tabla -->
+<div class="row">
+    <div class="col-12">
 
-            <div class="card">
+        <div class="card">
 
-                <div class="card-header">
-                    <h4 class="mb-0">
-                        [[#{plataforma.listado}]]
-                    </h4>
-                </div>
+            <div class="card-header header-plataformas">
+                <h4 class="mb-0">
+                    [[#{plataforma.listado}]]
+                </h4>
+            </div>
 
-                <div class="card-body">
+            <div class="card-body">
 
                     <div th:if="${plataformas != null and !plataformas.empty}">
 

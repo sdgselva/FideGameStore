@@ -49,7 +49,7 @@
                                     <label>[[#{usuario.imagen}]]</label>
                                     <input type="file" name='imagenFile' onchange='mostrarImagen(this);'
                                            class='form-control'/>
-                                    <img id='blah' src='#' alt='imagen de categoría' height="200"/></div>
+                                    <img id='blah' src='#' alt="" height="80" width="80" class="rounded-circle object-fit-cover"/></div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -87,7 +87,7 @@
                                             <td>[[${u.idUsuario}]]</td>
                                             <td>[[${u.username}]]</td>
                                             <td>[[${u.correo}]]</td>
-                                            <td><img th:src="@{${u.rutaImagen}}" alt="noData" height="75"/></td>
+                                            <td><img th:src="@{${u.rutaImagen}}" alt="noData" width="60" height="60" class="rounded-circle object-fit-cover border"/></td>
                                             <td th:text="${u.activo} ? 'Activa':'Inactiva'"></td>
                                             <td  sec:authorize="hasRole('ROLE_Administrador')">
                                                 <button type="button" class="btn btn-danger"
