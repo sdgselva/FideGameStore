@@ -281,7 +281,14 @@
                     <i class='fas fa-print'></i> [[#{accion.imprimir}]]
                 </button>
             </div>
-
         </div>
     </div>
+    <script>
+        // Clear only the cart items from sessionStorage
+        Object.keys(sessionStorage).forEach(function (key) {
+            if (key.startsWith("cart_")) {
+                sessionStorage.removeItem(key);
+            }
+        });
+    </script>
 </section>

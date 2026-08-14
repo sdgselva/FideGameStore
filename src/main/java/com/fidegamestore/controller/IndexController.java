@@ -1,7 +1,6 @@
 package com.fidegamestore.controller;
 
 import com.fidegamestore.service.CategoriaService;
-import com.fidegamestore.service.ProductoService;
 import com.fidegamestore.service.AnuncioService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,13 +12,11 @@ public class IndexController {
  // Las últimas versiones de Spring, recomiendan utilziar final y contructor en lugar de @autowired
     
     private final AnuncioService anuncioService;
-    private final ProductoService productoService;
     private final CategoriaService categoriaService;
     
     // (Spring inyecta automáticamente)
-    public IndexController(AnuncioService anuncioService, ProductoService productoService, CategoriaService categoriaService) {
+    public IndexController(AnuncioService anuncioService, CategoriaService categoriaService) {
         this.anuncioService = anuncioService;
-        this.productoService = productoService;
         this.categoriaService = categoriaService;
     }
     
@@ -32,26 +29,17 @@ public class IndexController {
         return "/index";
     }
     
-//    @GetMapping("/")
-//    public String cargarPaginaInicio(Model model) {
-//        var lista = productoService.getProductos(true);
-//        model.addAttribute("productos", lista);
-//        var categorias = categoriaService.getCategorias(true);
-//        model.addAttribute("categorias", categorias);
-//        return "/index";
-//    }
-    
     @GetMapping("/consultas/{idCategoria}")
     public String listado(@PathVariable("idCategoria") Integer idCategoria, Model model) {
         model.addAttribute("idCategoriaActual", idCategoria);
         var categoriaOptional = categoriaService.getCategoria(idCategoria);
         if (categoriaOptional.isEmpty()) {
             //Puede ser que no se exista la categoria buscada...
-            model.addAttribute("productos", java.util.Collections.emptyList());
+            model.addAttribute("anuncios", java.util.Collections.emptyList());
         } else {
             var categoria = categoriaOptional.get();
-            var productos = categoria.getProductos();
-            model.addAttribute("productos", productos);
+            var anuncios = anuncioService.findAnuncioByIdCategoria(categoria.getIdCategoria());
+            model.addAttribute("anuncios", anuncios);
         }
         var categorias = categoriaService.getCategorias(true);
         model.addAttribute("categorias", categorias);

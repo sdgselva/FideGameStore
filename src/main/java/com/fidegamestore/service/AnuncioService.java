@@ -31,6 +31,11 @@ public class AnuncioService {
         return anuncioRepository.findById(idAnuncio);
     }
     
+    @Transactional(readOnly = true)
+    public List<Anuncio> findAnuncioByIdCategoria(Integer idCategoria) {
+        return anuncioRepository.findAnuncioByIdCategoria(idCategoria);
+    }
+    
     @Transactional
     public void save(Anuncio anuncio) {
         anuncio = anuncioRepository.save(anuncio);
