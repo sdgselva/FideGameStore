@@ -80,9 +80,9 @@
             </div>
             <div class="card text-center bg-info text-white mb-3">
                 <div class="card-body">
-                    <a th:href="@{/ordenr/carrito}"
+                    <a th:href="@{/ordenar/carrito}"
                        class="btn btn-info">
-                        <i class='fas fa-fordward'></i> [[#{carrito.ordenr}]]
+                        <i class='fas fa-fordward'></i> [[#{carrito.ordenar}]]
                     </a>
                 </div>
             </div> 
@@ -236,7 +236,7 @@
                 <div class="col-md-6">
                     <h5>[[#{orden.detalles}]]</h5>
                     <p><strong>[[#{orden.numero}]]:</strong> <span th:text="${orden.idOrden}">1001</span></p>
-                    <p><strong>[[#{orden.fecha}]]:</strong> <span th:text="${#temporals.format(orden.fecha, 'dd-MM-yyyy hh:mm')}">2024-10-25</span></p>
+                    <p><strong>[[#{orden.fecha}]]:</strong> <span th:text="${#temporals.format(orden.fechaCreacion, 'dd-MM-yyyy hh:mm')}">2024-10-25</span></p>
                 </div>
                 <div class="col-md-6 text-md-right">
                     <h5>[[#{orden.cliente}]]</h5>

@@ -2,8 +2,6 @@ package com.fidegamestore.domain;
 
 
 import jakarta.persistence.*;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

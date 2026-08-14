@@ -10,7 +10,6 @@ public interface OrdenRepository extends JpaRepository<Orden, Integer>{
     @Query("SELECT o FROM Orden o " +
             "LEFT JOIN FETCH o.usuario " +       // Carga usuario
             "LEFT JOIN FETCH o.estadoOrden eo " +       // Carga las ordenesLlave que tengan el mismo ID
-            "LEFT JOIN FETCH eo.estadoOrden " +       // Carga las ordenesLlave que tengan el mismo ID
             "LEFT JOIN FETCH o.ordenLlaves ol " +       // Carga las ordenesLlave que tengan el mismo ID
             "LEFT JOIN FETCH ol.llave l " +        // Carga la llave de cada OrdenLlave
             "LEFT JOIN FETCH l.varianteProducto vp " +      // Carga el varianteProducto de cada llave

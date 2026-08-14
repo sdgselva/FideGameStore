@@ -135,9 +135,9 @@ public class CarritoController {
     }
 
     // --- 5. PROCESAR COMPRA (CHECKOUT) ---
-    @GetMapping("/ordenr/carrito")
-    public String ordenrCarrito(HttpSession session, RedirectAttributes redirectAttributes) {
-        System.out.println("Va a ordenr");
+    @GetMapping("/ordenar/carrito")
+    public String ordenarCarrito(HttpSession session, RedirectAttributes redirectAttributes) {
+        System.out.println("Va a ordenar");
         
         try {
             List<Item> carrito = carritoService.obtenerCarrito(session);
