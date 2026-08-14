@@ -177,6 +177,7 @@ public class CarritoService {
             
             // c. Actualizar inordenLlaverio (Stock)
             anuncio.setExistencias(anuncio.getExistencias() - item.getCantidad());
+            anuncio.setActivo(false);
             anuncioRepository.save(anuncio);
         }
 
