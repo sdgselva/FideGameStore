@@ -1,36 +1,40 @@
-<!-- Este fragmento permite agregar un nuevo elemento cuadno se presiona el boton de agregar -->
 <section th:fragment="agregar">
     <!-- Esta es la ventana modal -->
-    <div class="modal fade" id="agregarUsuarioModal"  tabindex="-1" 
+    <div class="modal fade" id="agregarProductoModal"  tabindex="-1" 
          aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-info text-white">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">
-                        <i class="fa-solid fa-layer-group"></i> [[#{usuario.agregar}]]</h1>
+                        <i class="fa-solid fa-layer-group"></i> [[#{producto.agregar}]]</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form th:action='@{/usuario/guardar}' th:object='${usuario}'
+                <form th:action='@{/producto/guardar}' th:object='${producto}'
                       class='was-validated' enctype="multipart/form-data" method="post">
                     <div class="modal-body">
                         <div class='mb-3'>
-                            <label>[[#{usuario.username}]]</label>
-                            <input type="text" name='username' class='form-control' maxlength="30" required/>                                   
+                            <label>[[#{producto.nombre}]]</label>
+                            <input type="text" name='nombreProducto' class='form-control'/>                                   
+                        </div>
+                        <div class="mb-3">
+                            <label>[[#{producto.categoria}]]</label>
+                            <select name="categoria.idCategoria" class="form-select" required>
+                                <option value="" selected disabled>
+                                    Seleccione una categoría
+                                </option>
+
+                                <option th:each="categoria : ${categorias}"
+                                        th:value="${categoria.idCategoria}"
+                                        th:text="${categoria.nombreCategoria}">
+                                </option>
+                            </select>
                         </div>
                         <div class='mb-3'>
-                            <label>[[#{usuario.password}]]</label>
-                            <input type="password" name='password' class='form-control' maxlength="15" required/>                                   
-                        </div>
-                        <div class='mb-3'>
-                            <label>[[#{usuario.correo}]]</label>
-                            <input type="email" name='correo' class='form-control' maxlength="75" required/>                                   
-                        </div>
-                        <div class='mb-3'>
-                            <label>[[#{usuario.activo}]]</label>
+                            <label>[[#{producto.activo}]]</label>
                             <input type="checkbox" name='activo' class='form-check-input'/>
                         </div>
                         <div class='mb-3'>
-                            <label>[[#{usuario.imagen}]]</label>
+                            <label>[[#{producto.imagen}]]</label>
                             <input type="file" name='imagenFile' onchange='mostrarImagen(this);'
                                    class='form-control'/>
                             <img id='blah' src='#' alt="" height="80" width="80" class="rounded-circle object-fit-cover"/></div>
@@ -47,6 +51,29 @@
     </div>
 </section>
 
+<!-- fragmento 1 para Agregar producto en ventana modal -->
+<section th:fragment="tabs" class="py-3 mb-4 header-tablas">
+    <div class="d-flex justify-content-center px-5"> 
+        <ul class="nav nav-underline">
+            <li class="nav-item">
+                <a th:href="@{/producto/listado}" 
+                   th:classappend="${idCategoriaActual == null} ? 'active'"
+                   class="nav-link" 
+                   aria-current="page">
+                    [[#{consultas.todas}]]
+                </a>
+            </li>
+            <li th:each="c : ${categorias}" class="nav-item">
+                <a th:href="@{/producto/consultas/{id}(id=${c.idCategoria})}"
+                   th:classappend="${idCategoriaActual != null and idCategoriaActual.equals(c.idCategoria)} ? 'active'"
+                   class="nav-link">
+                    [[${c.nombreCategoria}]]
+                </a>
+            </li>
+        </ul>
+    </div>
+</section>
+
 <!-- Este fragmento permite mostrar la lista de elementos y los botonoes de modificar y eliminar -->
 <section th:fragment="listado" class="p-3">
     <!-- Linea de total de elementos y del boton agregar-->
@@ -57,20 +84,20 @@
                     <div class="d-flex justify-content-between align-items-center px-3">
                         <div class="d-flex align-items-center gap-2">
                             <h5 class="mb-0">
-                                [[#{usuario.total}]]
+                                [[#{producto.total}]]
                             </h5>
                             <h4 class="mb-0">
                                 <i class="fas fa-layer-group"></i>
-                                [[${totalUsuarios}]]
+                                [[${totalProductos}]]
                             </h4>
                         </div>
                         <button type="button"
                                 class="btn btn-light"
                                 sec:authorize="hasRole('ROLE_Administrador')"
                                 data-bs-toggle="modal"
-                                data-bs-target="#agregarUsuarioModal">
+                                data-bs-target="#agregarProductoModal">
                             <i class="fa-solid fa-plus"></i>
-                            [[#{usuario.agregar}]]
+                            [[#{producto.agregar}]]
                         </button>
 
                     </div>
@@ -84,47 +111,46 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header header-tablas">
-                    <h4 class="mb-0">[[#{usuario.listado}]]</h4>
+                    <h4 class="mb-0">[[#{producto.listado}]]</h4>
                 </div>
                 <div class="card-body">
-                    <div th:if="${usuarios != null and !usuarios.empty}">
+                    <div th:if="${productos != null and !productos.empty}">
                         <table class="table table-striped table-hover mb-0">
                             <thead>
                                 <tr>
                                     <th>Id</th>
-                                    <th>[[#{usuario.username}]]</th>
-                                    <th>[[#{usuario.correo}]]</th>
+                                    <th>[[#{producto.nombre}]]</th>
+                                    <th>[[#{producto.categoria}]]</th>
                                     <th></th>
-                                    <th>[[#{usuario.activo}]]</th>
+                                    <th>[[#{producto.activo}]]</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="u : ${usuarios}">
-                                    <td>[[${u.idUsuario}]]</td>
-                                    <td>[[${u.username}]]</td>
-                                    <td>[[${u.correo}]]</td>
-                                    <td><img th:src="@{${u.rutaImagen}}" alt="noData" width="60" height="60" class="rounded-circle object-fit-cover border"/></td>
-                                    <td th:text="${u.activo} ? 'Activa':'Inactiva'"></td>
-
+                                <tr th:each="p : ${productos}">
+                                    <td>[[${p.idProducto}]]</td>
+                                    <td>[[${p.nombreProducto}]]</td>
+                                    <td>[[${p.categoria.nombreCategoria}]]</td>
+                                    <td><img th:src="@{${p.rutaImagen}}" alt="noData" width="120" height="120" class="object-fit-cover"/></td>
+                                    <td th:text="${p.activo} ? 'Activa':'Inactiva'"></td>
                                     <td sec:authorize="hasRole('ROLE_Administrador')">
                                         <div class="action-buttons">
                                             <button type="button"
                                                     class="btn btn-danger"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#confirmModal"
-                                                    th:data-bs-id="${u.idUsuario}"
-                                                    th:data-bs-nombre="${u.username}">
+                                                    th:data-bs-id="${p.idProducto}"
+                                                    th:data-bs-nombreProducto="${p.nombreProducto}">
                                                 <i class="fa-solid fa-trash"></i> [[#{accion.eliminar}]]
                                             </button>
                                             <button type="button"
                                                     class="btn btn-warning"
                                                     data-bs-toggle="modal"
-                                                    data-bs-target="#editarUsuarioModal"
-                                                    th:data-bs-id="${u.idUsuario}"
-                                                    th:data-bs-username="${u.username}"
-                                                    th:data-bs-correo="${u.correo}"
-                                                    th:data-bs-activo="${u.activo}">
+                                                    data-bs-target="#editarProductoModal"
+                                                    th:data-bs-id="${p.idProducto}"
+                                                    th:data-bs-nombreProducto="${p.nombreProducto}"
+                                                    th:data-bs-categoria="${p.categoria.idCategoria}"
+                                                    th:data-bs-activo="${p.activo}">
                                                 <i class="fas fa-pencil-alt"></i> [[#{accion.actualizar}]]
                                             </button>
                                         </div>
@@ -133,7 +159,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="text-center p-2" th:if="${usuarios == null or usuarios.empty}">
+                    <div class="text-center p-2" th:if="${productos == null or productos.empty}">
                         <span>[[#{lista.vacia}]]</span>
                     </div>
                 </div>
@@ -151,8 +177,8 @@
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered custom-modal-animation">
             <div class="modal-content animate-slide-up">
-                <form th:action="@{/usuario/eliminar}" th:object="${usuario}" method="post">
-                    <input type="hidden" name="idUsuario" id="modalId"/>
+                <form th:action="@{/producto/eliminar}" th:object="${producto}" method="post">
+                    <input type="hidden" name="idProducto" id="modalId"/>
                     <div class="modal-header bg-warning text-white">
                         <h5 class="modal-title" id="modalLabel">
                             <i class="fa-solid fa-circle-radiation"></i> [[#{accion.confirmar}]]
@@ -179,11 +205,11 @@
 
 <section th:fragment="modifica">
     <!-- Este div permite llamar al modal de modificar elementos desde el boton en la lista -->
-    <div class="modal fade" id="editarUsuarioModal" tabindex="-1" aria-labelledby="editarUsuarioModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editarProductoModal" tabindex="-1" aria-labelledby="editarProductoModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-warning">
-                    <h1 class="modal-title fs-5" id="editarUsuarioModalLabel">
+                    <h1 class="modal-title fs-5" id="editarProductoModalLabel">
                         <i class="fa-solid fa-pencil"></i> [[#{accion.actualizar}]]
                     </h1>
                     <button type="button"
@@ -191,47 +217,42 @@
                             data-bs-dismiss="modal"
                             aria-label="Close"></button>
                 </div>
-                <form th:action="@{/usuario/guardar}" method="post" th:object="${usuario}" 
+                <form th:action="@{/producto/guardar}" method="post" th:object="${producto}" 
                       class="was-validated" enctype="multipart/form-data">
                     <div class="modal-body">
                         <input type="hidden"
-                               id="editarIdUsuario"
-                               name="idUsuario"/>
+                               id="editarIdProducto"
+                               name="idProducto"/>
                         <div class="mb-3">
-                            <label for="editarUsername" class="form-label"> [[#{usuario.username}]]</label>
+                            <label for="editarNombreProducto" class="form-label"> [[#{nombre}]]</label>
                             <input type="text"
-                                   id="editarUsername"
-                                   name="username"
+                                   id="editarNombreProducto"
+                                   name="nombreProducto"
                                    class="form-control"
-                                   maxlength="30" 
                                    required/>
                         </div>
+                        <select name="categoria.idCategoria"
+                                id="editarCategoria"
+                                class="form-select" 
+                                required>
+                            <option value="" selected disabled>
+                                Seleccione una categoría///////
+                            </option>
+
+                            <option th:each="categoria : ${categorias}"
+                                    th:value="${categoria.idCategoria}"
+                                    th:text="${categoria.nombreCategoria}">
+                            </option>
+                        </select>
                         <div class="mb-3">
-                            <label for="editarPassword" class="form-label"> [[#{usuario.password}]]</label>
-                            <input type="password"
-                                   id="editarPassword"
-                                   name="password"
-                                   class="form-control"
-                                   maxlength="25"/>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editarCorreo" class="form-label"> [[#{usuario.correo}]]</label>
-                            <input type="email"
-                                   id="editarCorreo"
-                                   name="correo"
-                                   class="form-control"
-                                   maxlength="75"
-                                   required/>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editarActivo" class="form-label">[[#{usuario.activo}]]</label>
+                            <label for="editarActivo" class="form-label">[[#{producto.activo}]]</label>
                             <input type="checkbox"
                                    id="editarActivo"
                                    name="activo"
                                    class="form-check-input"/>
                         </div>
                         <div class="mb-3">
-                            <label for="editarImagen">[[#{usuario.imagen}]]</label>
+                            <label for="editarImagen">[[#{producto.imagen}]]</label>
                             <input class="form-control" id="editarImagen" type="file" name="imagenFile"
                                    onchange="mostrarImagen(this);" />
                             <img id="blah" alt="your image" height="200" style="display: none;"/>
@@ -256,20 +277,20 @@
     </div>
     <!-- Este script permite capturar la informacion de cada elemento en  la tabla para popular el div de modificar elemento --> 
     <script>
-        const editarModal = document.getElementById('editarUsuarioModal');
+        const editarModal = document.getElementById('editarProductoModal');
 
         editarModal.addEventListener('show.bs.modal', function (event) {
 
             const button = event.relatedTarget;
 
             const id = button.getAttribute('data-bs-id');
-            const username = button.getAttribute('data-bs-username');
-            const correo = button.getAttribute('data-bs-correo');
+            const nombreProducto = button.getAttribute('data-bs-nombreProducto');
+            const categoria = button.getAttribute('data-bs-categoria');
             const activo = button.getAttribute('data-bs-activo');
 
-            document.getElementById('editarIdUsuario').value = id;
-            document.getElementById('editarUsername').value = username;
-            document.getElementById('editarCorreo').value = correo;
+            document.getElementById('editarIdProducto').value = id;
+            document.getElementById('editarNombreProducto').value = nombreProducto;
+            document.getElementById('editarCategoria').value = categoria;
             document.getElementById('editarActivo').checked = activo === 'true';
 
             ////////
@@ -284,6 +305,3 @@
         });
     </script>
 </section>
-
-
-

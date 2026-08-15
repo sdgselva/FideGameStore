@@ -87,7 +87,7 @@ public class RegistroService {
     }
 
     private String demeClave() {
-        String tira = "ABCDEFGHIJKLMNOPQRSTUXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        String tira = "ABCDEFGHIJKLMNOPQRSTUXYZ0123456789";
         String clave = "";
         for (int i = 0; i < 40; i++) {
             clave += tira.charAt((int) (Math.random() * tira.length()));

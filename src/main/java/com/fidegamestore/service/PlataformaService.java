@@ -21,6 +21,11 @@ public class PlataformaService {
         return plataformaRepository.findAllPlataformas();
     }
     
+    @Transactional(readOnly=true)
+    public List<Plataforma> getPlataformasActivas() {
+        return plataformaRepository.findByActivoTrue();
+    }
+    
      @Transactional(readOnly = true)
     public Optional<Plataforma> getPlataforma(Integer idPlataforma) {
         return plataformaRepository.findById(idPlataforma);

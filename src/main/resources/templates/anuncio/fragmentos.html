@@ -1,0 +1,353 @@
+<section th:fragment="agregar">
+    <!-- Esta es la ventana modal -->
+    <div class="modal fade" id="agregarAnuncioModal"  tabindex="-1" 
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">
+                        <i class="fa-solid fa-layer-group"></i> [[#{anuncio.agregar}]]</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action='@{/anuncio/guardar}' th:object='${anuncio}'
+                      class='was-validated' enctype="multipart/form-data" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label>[[#{anuncio.variante-producto}]]</label>
+                            <select name="idProducto" class="form-select" required>
+                                <option value="" selected disabled>
+                                    Seleccione una categoría
+                                </option>
+                                <option th:each="producto : ${productos}"
+                                        th:value="${producto.idProducto}"
+                                        th:text="${producto.nombreProducto}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>[[#{anuncio.variante-producto}]]</label>
+                            <select name="idRegion" class="form-select" required>
+                                <option value="" selected disabled>
+                                    Seleccione una categoría
+                                </option>
+
+                                <option th:each="region : ${regiones}"
+                                        th:value="${region.idRegion}"
+                                        th:text="${region.nombreRegion}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>[[#{anuncio.variante-producto}]]</label>
+                            <select name="idPlataforma" class="form-select" required>
+                                <option value="" selected disabled>
+                                    Seleccione una categoría
+                                </option>
+
+                                <option th:each="plataforma : ${plataformas}"
+                                        th:value="${plataforma.idPlataforma}"
+                                        th:text="${plataforma.nombrePlataforma}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class='mb-3'>
+                            <label>[[#{producto.nombre}]]</label>
+                            <input type="number" name='precio' class='form-control'/>                                   
+                        </div>
+                        <div class='mb-3'>
+                            <label>[[#{anuncio.activo}]]</label>
+                            <input type="checkbox" name='activo' class='form-check-input'/>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fa-solid fa-xmark"></i> [[#{accion.cerrar}]]</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa-solid fa-floppy-disk"></i> [[#{accion.guardar}]]</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- fragmento 1 para Agregar anuncio en ventana modal -->
+<section th:fragment="tabs" class="py-3 mb-4 header-tablas">
+    <div class="d-flex justify-content-center px-5"> 
+        <ul class="nav nav-underline">
+            <li class="nav-item">
+                <a th:href="@{/anuncio/listado}" 
+                   th:classappend="${idCategoriaActual == null} ? 'active'"
+                   class="nav-link" 
+                   aria-current="page">
+                    [[#{consultas.todas}]]
+                </a>
+            </li>
+            <li th:each="c : ${categorias}" class="nav-item">
+                <a th:href="@{/anuncio/consultas/{id}(id=${c.idCategoria})}"
+                   th:classappend="${idCategoriaActual != null and idCategoriaActual.equals(c.idCategoria)} ? 'active'"
+                   class="nav-link">
+                    [[${c.nombreCategoria}]]
+                </a>
+            </li>
+        </ul>
+    </div>
+</section>
+
+<!-- Este fragmento permite mostrar la lista de elementos y los botonoes de modificar y eliminar -->
+<section th:fragment="listado" class="p-3">
+    <!-- Linea de total de elementos y del boton agregar-->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card text-center total-elementos">
+                <div class="card-body py-2">
+                    <div class="d-flex justify-content-between align-items-center px-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <h5 class="mb-0">
+                                [[#{anuncio.total}]]
+                            </h5>
+                            <h4 class="mb-0">
+                                <i class="fas fa-layer-group"></i>
+                                [[${totalAnuncios}]]
+                            </h4>
+                        </div>
+                        <button type="button"
+                                class="btn btn-light"
+                                sec:authorize="hasRole('ROLE_Administrador')"
+                                data-bs-toggle="modal"
+                                data-bs-target="#agregarAnuncioModal">
+                            <i class="fa-solid fa-plus"></i>
+                            [[#{anuncio.agregar}]]
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla que da la lista de elementos -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header header-tablas">
+                    <h4 class="mb-0">[[#{anuncio.listado}]]</h4>
+                </div>
+                <div class="card-body">
+                    <div th:if="${anuncios != null and !anuncios.empty}">
+                        <table class="table table-striped table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>[[#{anuncio.producto}]]</th>
+                                    <th>[[#{anuncio.categoria}]]</th>
+                                    <th>[[#{anuncio.region}]]</th>
+                                    <th>[[#{anuncio.plataforma}]]</th>
+                                    <th>[[#{anuncio.precio}]]</th>
+                                    <th></th>
+                                    <th>[[#{anuncio.activo}]]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="a : ${anuncios}">
+                                    <td>[[${a.idAnuncio}]]</td>
+                                    <td>[[${a.varianteProducto.producto.nombreProducto}]]</td>
+                                    <td>[[${a.varianteProducto.producto.categoria.nombreCategoria}]]</td>
+                                    <td>[[${a.varianteProducto.region.nombreRegion}]]</td>
+                                    <td>[[${a.varianteProducto.plataforma.nombrePlataforma}]]</td>
+                                    <td>[[${a.precio}]]</td>
+                                    <td><img th:src="@{${a.varianteProducto.producto.rutaImagen}}" alt="noData" width="120" height="120" class="object-fit-cover"/></td>
+                                    <td th:text="${a.activo} ? 'Activa':'Inactiva'"></td>
+                                    <td sec:authorize="hasRole('ROLE_Administrador')">
+                                        <div class="action-buttons">
+                                            <button type="button"
+                                                    class="btn btn-danger"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#confirmModal"
+                                                    th:data-bs-id="${a.idAnuncio}"
+                                                    th:data-bs-producto="${a.varianteProducto.producto.nombreProducto}">
+                                                <i class="fa-solid fa-trash"></i> [[#{accion.eliminar}]]
+                                            </button>
+                                            <button type="button"
+                                                    class="btn btn-warning"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#editarAnuncioModal"
+                                                    th:data-bs-id="${a.idAnuncio}"
+                                                    th:data-bs-producto="${a.varianteProducto.producto.idProducto}"
+                                                    th:data-bs-region="${a.varianteProducto.region.idRegion}"
+                                                    th:data-bs-plataforma="${a.varianteProducto.plataforma.idPlataforma}"
+                                                    th:data-bs-precio="${a.precio}"
+                                                    th:data-bs-activo="${a.activo}">
+                                                <i class="fas fa-pencil-alt"></i> [[#{accion.actualizar}]]
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center p-2" th:if="${anuncios == null or anuncios.empty}">
+                        <span>[[#{lista.vacia}]]</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Este fragmento desea confirmar si se desea eliminar un elemento -->
+<section th:fragment="confirmarEliminar">
+    <div class="modal fade" 
+         id="confirmModal" 
+         tabindex="-1" 
+         aria-labelledby="modalLabel" 
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered custom-modal-animation">
+            <div class="modal-content animate-slide-up">
+                <form th:action="@{/anuncio/eliminar}" th:object="${anuncio}" method="post">
+                    <input type="hidden" name="idAnuncio" id="modalId"/>
+                    <div class="modal-header bg-warning text-white">
+                        <h5 class="modal-title" id="modalLabel">
+                            <i class="fa-solid fa-circle-radiation"></i> [[#{accion.confirmar}]]
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>[[#{accion.confirmar.texto1}]] <span id="modalDescripcion"></span>?</p>
+                        <h6>[[#{accion.confirmar.texto2}]]</h6>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fa-solid fa-trash"></i> [[#{accion.eliminar}]]
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fa-solid fa-xmark"></i> [[#{accion.cerrar}]]
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section th:fragment="modifica">
+    <!-- Este div permite llamar al modal de modificar elementos desde el boton en la lista -->
+    <div class="modal fade" id="editarAnuncioModal" tabindex="-1" aria-labelledby="editarAnuncioModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h1 class="modal-title fs-5" id="editarAnuncioModalLabel">
+                        <i class="fa-solid fa-pencil"></i> [[#{accion.actualizar}]]
+                    </h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <form th:action="@{/anuncio/guardar}" method="post" th:object="${anuncio}" 
+                      class="was-validated" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <input type="hidden"
+                               id="editarIdAnuncio"
+                               name="idAnuncio"/>
+                        <div class="mb-3">
+                            <select name="idProducto"
+                                    id="editarNombreProducto"
+                                    class="form-select" 
+                                    required>
+                                <option value="" selected disabled>
+                                    Seleccione una categoría
+                                </option>
+                                <option th:each="producto : ${productos}"
+                                        th:value="${producto.idProducto}"
+                                        th:text="${producto.nombreProducto}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <select name="idRegion"
+                                    id="editarNombreRegion"
+                                    class="form-select" 
+                                    required>
+                                <option value="" selected disabled>
+                                    Seleccione una categoría
+                                </option>
+
+                                <option th:each="region : ${regiones}"
+                                        th:value="${region.idRegion}"
+                                        th:text="${region.nombreRegion}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <select name="idPlataforma"
+                                    id="editarNombrePlataforma"
+                                    class="form-select" 
+                                    required>
+                                <option value="" selected disabled>
+                                    Seleccione una categoría
+                                </option>
+
+                                <option th:each="plataforma : ${plataformas}"
+                                        th:value="${plataforma.idPlataforma}"
+                                        th:text="${plataforma.nombrePlataforma}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editarPrecio" class="form-label"> [[#{precio}]]</label>
+                            <input type="number"
+                                   id="editarPrecio"
+                                   name="precio"
+                                   class="form-control"
+                                   required/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editarActivo" class="form-label">[[#{anuncio.activo}]]</label>
+                            <input type="checkbox"
+                                   id="editarActivo"
+                                   name="activo"
+                                   class="form-check-input"/>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                            <i class="fa-solid fa-xmark"></i>
+                            [[#{accion.cerrar}]]
+                        </button>
+                        <button type="submit"
+                                class="btn btn-warning">
+                            <i class="fa-solid fa-check"></i>
+                            [[#{accion.guardar}]]
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Este script permite capturar la informacion de cada elemento en  la tabla para popular el div de modificar elemento --> 
+    <script>
+        const editarModal = document.getElementById('editarAnuncioModal');
+
+        editarModal.addEventListener('show.bs.modal', function (event) {
+
+            const button = event.relatedTarget;
+
+            const id = button.getAttribute('data-bs-id');
+            const idProducto = button.getAttribute('data-bs-producto');
+            const idRegion = button.getAttribute('data-bs-region');
+            const idPlataforma = button.getAttribute('data-bs-plataforma');
+            const precio = button.getAttribute('data-bs-precio');
+            const activo = button.getAttribute('data-bs-activo');
+
+            document.getElementById('editarIdAnuncio').value = id;
+            document.getElementById('editarNombreProducto').value = idProducto;
+            document.getElementById('editarNombreRegion').value = idRegion;
+            document.getElementById('editarNombrePlataforma').value = idPlataforma;
+            document.getElementById('editarPrecio').value = precio;
+            document.getElementById('editarActivo').checked = activo === 'true';
+        });
+    </script>
+</section>

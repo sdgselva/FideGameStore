@@ -10,23 +10,28 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class RegionService {
+
     private final RegionRepository regionRepository;
 
     public RegionService(RegionRepository regionRepository) {
         this.regionRepository = regionRepository;
     }
-    
-    @Transactional(readOnly=true)
+
+    @Transactional(readOnly = true)
     public List<Region> getRegions() {
         return regionRepository.selectAllRegions();
     }
-    
-        
+
+    @Transactional(readOnly = true)
+    public List<Region> getRegionesActivas() {
+        return regionRepository.findByActivoTrue();
+    }
+
     @Transactional(readOnly = true)
     public Optional<Region> getRegion(Integer idRegion) {
         return regionRepository.findById(idRegion);
     }
-    
+
     @Transactional
     public void save(Region region) {
         region = regionRepository.save(region);
