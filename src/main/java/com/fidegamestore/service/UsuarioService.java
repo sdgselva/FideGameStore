@@ -84,14 +84,14 @@ public class UsuarioService {
         }
 
         //Se valida si la clave se va actualizar o si es un usuario nuevo se debe actualizar...
-        var asignarRol = false;
+        //var asignarRol = false;
         if (usuario.getIdUsuario() == null) {
             if (usuario.getPassword() == null || usuario.getPassword().isBlank()) {
                 throw new IllegalArgumentException("La contraseña es obligatoria para nuevos usuarios.");
             }
             //La primera vez como es activación no se encripta...
             usuario.setPassword(encriptaClave ? passwordEncoder.encode(usuario.getPassword()) : usuario.getPassword());
-            asignarRol = true;
+            //asignarRol = true;
         } else {
             if (usuario.getPassword() == null || usuario.getPassword().isBlank()) {
                 // El campo de password en el formulario viene vacío (no se desea actualizar).
@@ -120,12 +120,16 @@ public class UsuarioService {
             } catch (IOException e) {
             }
         }
-        if (asignarRol) {
-            //Si se está creando el usuario, se crea el rol por defecto "USER"
-            asignarRolPorUsername(usuario.getUsername(), "Usuario");
-        }
+//        if (asignarRol) {
+//            //Si se está creando el usuario, se crea el rol por defecto "USER"
+//            asignarRolPorUsername(usuario.getUsername(), "Usuario");
+//        }
     }
     
+    @Transactional
+    public void crearRolUsuario(Usuario usuario){
+        asignarRolPorUsername(usuario.getUsername(), "Usuario");
+    }
     //Elimina al usuario
     @Transactional
     public void delete(Integer idUsuario) {

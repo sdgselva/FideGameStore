@@ -46,6 +46,7 @@ public class RegistroService {
     public void activar(Usuario usuario, MultipartFile imagenFile) {
         usuario.setActivo(true);
         usuarioService.save(usuario, imagenFile,true);
+        usuarioService.crearRolUsuario(usuario);
     }
 
     public Model crearUsuario(Model model, Usuario usuario) throws MessagingException {
