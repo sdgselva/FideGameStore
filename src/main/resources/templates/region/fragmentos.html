@@ -1,15 +1,6 @@
-<!-- fragmento 1 para Agregar region en ventana modal -->
+<!-- Este fragmento permite agregar un nuevo elemento cuadno se presiona el boton de agregar -->
 <section th:fragment="agregar">
-    <!-- Button trigger modal -->
-    <div class='row py-4 mb-2 bg-light'>
-        <div class='col-md-1'></div>
-        <div class='col-md-3'>
-            <button type="button" class="btn btn-primary"  sec:authorize="hasRole('ROLE_Administrador')"
-                    data-bs-toggle="modal" data-bs-target="#agregarRegionModal">
-                <i class="fa-solid fa-plus"></i> [[#{region.agregar}]]</button>
-        </div>
-    </div>
-    <!-- Modal -->
+    <!-- Esta es la ventana modal -->
     <div class="modal fade" id="agregarRegionModal"  tabindex="-1" 
          aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -23,11 +14,12 @@
                       class='was-validated' enctype="multipart/form-data" method="post">
                     <div class="modal-body">
                         <div class='mb-3'>
-                            <label>[[#{region.nombreRegion}]]</label>
+                            <label>[[#{region.nombre}]]</label>
                             <input type="text" name='nombreRegion' class='form-control' required="true"/></div>
                         <div class='mb-3'>
                             <label>[[#{region.activo}]]</label>
                             <input type="checkbox" name='activo' class='form-check-input'/></div>
+                    </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             <i class="fa-solid fa-xmark"></i> [[#{accion.cerrar}]]</button>
@@ -40,17 +32,52 @@
     </div>
 </section>
 
-<!-- fragmento 2 para el listado de regions -->
+<!-- Este fragmento permite mostrar la lista de elementos y los botonoes de modificar y eliminar -->
 <section th:fragment="listado" class="p-3">
-    <div class="row p-3">
-        <div class="col-md-9">
-            <div class="card p-2">
-                <div class="card-header"><h4>[[#{region.listado}]]</h4></div>
+    <!-- Linea de total de elementos y del boton agregar-->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card text-center total-elementos">
+                <div class="card-body py-2">
+                    <div class="d-flex justify-content-between align-items-center px-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <h5 class="mb-0">
+                                [[#{region.total}]]
+                            </h5>
+                            <h4 class="mb-0">
+                                <i class="fas fa-layer-group"></i>
+                                [[${totalRegions}]]
+                            </h4>
+                        </div>
+                        <button type="button"
+                                class="btn btn-light"
+                                sec:authorize="hasRole('ROLE_Administrador')"
+                                data-bs-toggle="modal"
+                                data-bs-target="#agregarRegionModal">
+                            <i class="fa-solid fa-plus"></i>
+                            [[#{region.agregar}]]
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla que da la lista de elementos -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header header-tablas">
+                    <h4 class="mb-0">[[#{region.listado}]]</h4>
+                </div>
                 <div class="card-body">
                     <div th:if="${regions != null and !regions.empty}">
-                        <table class="table table-striped table-hover">
-                            <thead><tr><th>#</th>
-                                    <th>[[#{region.nombreRegion}]]</th>
+                        <table class="table table-striped table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>[[#{region.nombre}]]</th>
                                     <th>[[#{region.activo}]]</th>
                                     <th></th>
                                 </tr>
@@ -59,78 +86,42 @@
                                 <tr th:each="c : ${regions}">
                                     <td>[[${c.idRegion}]]</td>
                                     <td>[[${c.nombreRegion}]]</td>
-                                    <td th:text="${c.activo} ? 'Activa':'Inactiva'"></td>
+                                    <td th:text="${c.activo} ? 'Activo':'Inactivo'"></td>
                                     <td sec:authorize="hasRole('ROLE_Administrador')">
-                                        <button type="button" class="btn btn-danger"
-                                                data-bs-toggle="modal" data-bs-target="#confirmModal"
-                                                th:data-bs-id="${c.idRegion}"
-                                                th:data-bs-nombreRegion="${c.nombreRegion}">
-                                            <i class="fa-solid fa-trash"></i> [[#{accion.eliminar}]]
-                                        </button>                                           
-                                        <a th:href="@{/region/modificar/}+${c.idRegion}" class="btn btn-warning">
-                                            <i class="fas fa-pencil-alt"></i> [[#{accion.actualizar}]]
-                                        </a>                                                
+                                        <div class="action-buttons">
+                                            <button type="button"
+                                                    class="btn btn-danger"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#confirmModal"
+                                                    th:data-bs-id="${c.idRegion}"
+                                                    th:data-bs-nombre="${c.nombreRegion}">
+                                                <i class="fa-solid fa-trash"></i> [[#{accion.eliminar}]]
+                                            </button>
+                                            <button type="button"
+                                                    class="btn btn-warning"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#editarRegionModal"
+                                                    th:data-bs-id="${c.idRegion}"
+                                                    th:data-bs-nombre="${c.nombreRegion}"
+                                                    th:data-bs-activo="${c.activo}">
+                                                <i class="fas fa-pencil-alt"></i> [[#{accion.actualizar}]]
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>
-                     </table></div>
+                        </table>
+                    </div>
                     <div class="text-center p-2" th:if="${regions == null or regions.empty}">
-                        <span>[[#{lista.vacia}]]</span></div>
+                        <span>[[#{lista.vacia}]]</span>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-center bg-success text-white mb-3">
-                <div class="card-body"><h3>[[#{region.total}]]</h3>
-                    <h4 class="fs-2"><i class="fas fa-layer-group"></i> [[${totalRegions}]]</h4>
-                </div></div>
-        </div>
     </div>
 </section>
 
-<!-- 3 Fragmento que se utiliza en la página modifca.html -->
-<section th:fragment="editar">
-    <div class="row">
-        <div class="col-md-2"></div>
-        <div class="col-md-8">
-            <form method="POST" th:action="@{/region/guardar}" 
-                  th:object="${region}" class="was-validated" enctype="multipart/form-data">
-                <input type="hidden" name="idRegion" th:field="*{idRegion}"/>
-                <div class="row py-4 mb-4 bg-light">
-                    <div class="col-md-4 d-grid">
-                        <a th:href="@{/region/listado}" class="btn btn-primary">
-                            <i class="fas fa-arrow-left"></i> [[#{accion.regresar}]]</a>
-                    </div>                                
-                    <div class="col-md-4 d-grid">
-                        <button type="submit" class="btn btn-success">
-                            <i class="fas fa-check"></i> [[#{accion.guardar}]]</button>
-                    </div>
-                </div>                        
-                <div class="row">
-                    <div class="col">
-                        <div class="card">
-                            <div class="card-header"><h4>[[#{accion.actualizar}]]</h4></div>
-                            <div class="card-body">
-                                <div class="mb-3">
-                                    <label for="nombreRegion">[[#{region.nombreRegion}]]</label>
-                                    <input type="text" class="form-control" name="nombreRegion" 
-                                           th:field="*{nombreRegion}" required="true"/>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="activo">[[#{region.activo}]]</label>
-                                    <input class="form-check-input" type="checkbox" 
-                                           name="activo" id="activo" th:field="*{activo}"/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</section>
-
-<!-- 4 fragmento que se utiliza para confirmar que se desea eliminar una region -->
+<!-- Este fragmento desea confirmar si se desea eliminar un elemento -->
 <section th:fragment="confirmarEliminar">
     <div class="modal fade" 
          id="confirmModal" 
@@ -163,5 +154,79 @@
             </div>
         </div>
     </div>
-</section>
+
+
+    <section th:fragment="modifica">
+        <!-- Este div permite llamar al modal de modificar elementos desde el boton en la lista -->
+        <div class="modal fade" id="editarRegionModal" tabindex="-1" aria-labelledby="editarRegionModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning">
+                        <h1 class="modal-title fs-5" id="editarRegionModalLabel">
+                            <i class="fa-solid fa-pencil"></i> [[#{accion.actualizar}]]
+                        </h1>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <form th:action="@{/region/guardar}" method="post" th:object="${region}">
+                        <div class="modal-body">
+                            <input type="hidden"
+                                   id="editarIdRegion"
+                                   name="idRegion"/>
+                            <div class="mb-3">
+                                <label for="editarNombreRegion" class="form-label"> [[#{region.nombre}]]</label>
+                                <input type="text"
+                                       id="editarNombre"
+                                       name="nombreRegion"
+                                       class="form-control"
+                                       required/>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editarActivo" class="form-label">[[#{region.activo}]]</label>
+                                <input type="checkbox"
+                                       id="editarActivo"
+                                       name="activo"
+                                       class="form-check-input"/>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button"
+                                    class="btn btn-secondary"
+                                    data-bs-dismiss="modal">
+                                <i class="fa-solid fa-xmark"></i>
+                                [[#{accion.cerrar}]]
+                            </button>
+                            <button type="submit"
+                                    class="btn btn-warning">
+                                <i class="fa-solid fa-check"></i>
+                                [[#{accion.guardar}]]
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Este script permite capturar la informacion de cada elemento en  la tabla para popular el div de modificar elemento --> 
+        <script>
+            const editarModal = document.getElementById('editarRegionModal');
+
+            editarModal.addEventListener('show.bs.modal', function (event) {
+
+                const button = event.relatedTarget;
+
+                const id = button.getAttribute('data-bs-id');
+                const nombre = button.getAttribute('data-bs-nombre');
+                const activo = button.getAttribute('data-bs-activo');
+
+                document.getElementById('editarIdRegion').value = id;
+                document.getElementById('editarNombre').value = nombre;
+                document.getElementById('editarActivo').checked = activo === 'true';
+            });
+        </script>
+    </section>
+
+
 

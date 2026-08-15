@@ -8,6 +8,7 @@ import com.fidegamestore.repository.LlaveRepository;
 
 import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -152,10 +153,12 @@ public class CarritoService {
         Orden orden = new Orden();
         EstadoOrden estadoOrden = new EstadoOrden();
         estadoOrden.setIdEstadoOrden(1);
-              
+        
         orden.setUsuario(usuario);
         orden.setPrecioTotal(calcularTotal(carrito));
-        orden.setEstadoOrden(estadoOrden); 
+        orden.setEstadoOrden(estadoOrden);
+        orden.setFechaCreacion(LocalDateTime.now());
+        orden.setFechaModificacion(LocalDateTime.now());
         orden = ordenRepository.save(orden); // Persistir para obtener el idOrden
 
         // 2. CREAR Y PERSISTIR LINEAS DE VENTA (OrdenLlave) y ACTUALIZAR STOCK
@@ -173,6 +176,8 @@ public class CarritoService {
             ordenLlave.setOrden(orden);
             ordenLlave.setLlave(llave);
             ordenLlave.setPrecioPagado(item.getPrecioHistorico());
+            ordenLlave.setFechaCreacion(LocalDateTime.now());
+            ordenLlave.setFechaModificacion(LocalDateTime.now());
             ordenLlaveRepository.save(ordenLlave);
             
             // c. Actualizar inordenLlaverio (Stock)

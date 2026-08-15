@@ -23,34 +23,23 @@
                         <thead class="thead-dark">
                             <tr>
                                 <th>#</th>
-                                <th>[[#{anuncio.descripcion}]]</th>
+                                <th>[[#{anuncio.nombreProducto}]]</th>
+                                <th></th>
                                 <th>[[#{anuncio.precio}]]</th>
-                                <th>[[#{carrito.cantidad}]]</th>
-                                <th>[[#{carrito.total}]]</th>
-                                <th></th>
-                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="item : ${carritoItems}">
                                 <td>[[${item.anuncio.idAnuncio}]]</td>
                                 <td>[[${item.anuncio.varianteProducto.producto.nombreProducto}]]</td>
-
+                                <td><img th:src="@{${item.anuncio.varianteProducto.producto.rutaImagen}}" alt="your image" height="200"/></td>
                                 <td class="text-end">[[${#numbers.formatCurrency(item.precioHistorico)}]]</td>
-                                <td class="text-center">[[${item.cantidad}]]</td>
-                                <td class="text-center">[[${#numbers.formatCurrency(item.precioHistorico*item.cantidad)}]]</td>
                                 <td>
                                     <form th:action="@{/carrito/eliminar/}+${item.anuncio.idAnuncio}" method="post" class="d-inline">
                                         <button type="submit" class="btn btn-danger">
                                             <i class='fas fa-trash'></i> [[#{accion.eliminar}]]
                                         </button>
                                     </form>
-                                </td>
-                                <td>
-                                    <a th:href="@{/carrito/modificar/}+${item.anuncio.idAnuncio}"
-                                       class="btn btn-warning">
-                                        <i class='fas fa-pencil'></i> [[#{accion.actualizar}]]
-                                    </a>
                                 </td>
                             </tr>
                         </tbody>
@@ -91,138 +80,6 @@
 </section>
 
 
-<!-- Fragmento 3, muestra la información de un item del carrito de compras, sólo se puede modificar la cantidad o eliminarlo completamente -->
-<section th:fragment="modificaItem" class="container py-4">
-    <div class="row mb-3">
-        <div class="col-12">
-            <a th:href="@{/carrito/listado}" class="btn btn-primary">
-                <i class='fas fa-reply'></i> [[#{accion.regresar}]]
-            </a>
-        </div>
-    </div>
-
-    <div class="card shadow-lg mx-auto" style="max-width: 800px;">
-        <div class="card-body">
-            <h4 class="card-title mb-4">[[#{accion.actualizar}]]</h4>
-            <div class="row align-items-center">
-                <div class="col-md-4 text-center mb-3 mb-md-0">
-                    <figure>
-                        <img th:src="@{${item.anuncio.varianteProducto.producto.rutaImagen}}" 
-                             width="150" 
-                             alt="Imagen de Anuncio" 
-                             class="rounded shadow-sm"/>
-                    </figure>
-                </div>
-                <div class="col-md-8">
-                    <h5 class="font-weight-bold" th:text="${item.anuncio.varianteProducto.producto.nombreProducto}">Nombre Anuncio</h5>
-                    <p class="text-muted small mb-1" th:text="${item.anuncio.varianteProducto.region.nombreRegion}">Detalle del anuncio</p>
-                    <p class="text-info mb-3">
-                        [[#{anuncio.precio}]]: 
-                        <span th:text="${#numbers.formatCurrency(item.precioHistorico)}">$520.00</span>
-                        <span id="precioUnitario" 
-                              th:data-precio="${item.precioHistorico}" 
-                              style="display: none;">
-                        </span>
-                    </p>
-                    <form th:action="@{/carrito/actualizar}"
-                          method="post"
-                          th:object="${item}"
-                          class="form-inline mb-4">
-                        <input type="hidden" name="idAnuncio" th:field="*{anuncio.idAnuncio}"/>
-                        <label class="mr-2">[[#{carrito.cantidad}]]:</label>
-                        <div class="input-group input-group-sm mr-4" style="width: 130px;">
-                            <div class="input-group-prepend">
-                                <button type="button" class="btn btn-outline-secondary btn-sm" 
-                                        onclick="ajustarCantidad(this, -1)">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                            </div>
-                        </div>                        
-                        <button class="btn btn-success btn-sm" type="submit" name="guardar">
-                            <i class='fas fa-save'></i> [[#{accion.guardar}]]
-                        </button>
-                    </form>
-                    <div class="alert alert-light text-right mb-4">
-                        <strong class="h5">[[#{carrito.total}]]: 
-                            <span id="subtotalItemDisplay"
-                                  th:with="subtotal=${item.precioHistorico} * ${item.cantidad}"
-                                  th:text="${#numbers.formatCurrency(subtotal)}" 
-                                  class="text-success">$1,040.00</span>
-                        </strong>
-                    </div>
-                    <div class="text-right">
-                        <form th:action="@{/carrito/eliminar/}+${item.anuncio.idAnuncio}" 
-                              method="post"
-                              style="display: inline;">
-                            <button type="submit" 
-                                    class="btn btn-outline-danger btn-sm"
-                                    onclick="return confirm('¿Está seguro de que desea eliminar este anuncio del carrito?');">
-                                <i class='fas fa-trash'></i> [[#{accion.eliminar}]]
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // 💡 Función básica para manejar el Stepper UI (requiere jQuery si usas Thymeleaf)
-        function ajustarCantidad(button, delta) {
-            var input = $(button).closest('.input-group').find('input[type="number"]');
-            var currentValue = parseInt(input.val());
-            var minValue = parseInt(input.attr('min'));
-            var maxValue = parseInt(input.attr('max'));
-            var newValue = currentValue + delta;
-            // Limitar la cantidad
-            if (newValue >= minValue && newValue <= maxValue) {
-                input.val(newValue);
-                // 💡 SOLUCIÓN DEL PROBLEMA 2: Llamar al cálculo después de cambiar el valor
-                calcularSubtotalItem();
-            } else if (newValue < minValue) {
-                input.val(minValue);
-                calcularSubtotalItem();
-            } else if (newValue > maxValue) {
-                input.val(maxValue);
-                calcularSubtotalItem();
-            }
-            // Lógica para deshabilitar botones (opcional)
-            $(button).closest('.input-group').find('.fa-minus').closest('button').prop('disabled', input.val() <= minValue);
-            $(button).closest('.input-group').find('.fa-plus').closest('button').prop('disabled', input.val() >= maxValue);
-        }
-        function calcularSubtotalItem() {
-            // 1. Obtener los elementos por sus IDs
-            var cantidadInput = document.getElementById('cantidadInput');
-            // El precio se obtiene del atributo data-precio (valor numérico sin formato)
-            var precioUnitarioSpan = document.getElementById('precioUnitario');
-            var subtotalDisplay = document.getElementById('subtotalItemDisplay');
-
-            // Verificación de existencia de elementos
-            if (!cantidadInput || !precioUnitarioSpan || !subtotalDisplay)
-                return;
-
-            // 2. Leer y parsear los valores
-            var cantidad = parseInt(cantidadInput.value) || 0;
-            var precioUnitario = parseFloat(precioUnitarioSpan.dataset.precio) || 0;
-
-            // 3. Calcular y formatear
-            var nuevoSubtotal = cantidad * precioUnitario;
-
-            // 4. Actualizar la visualización del Subtotal
-            subtotalDisplay.textContent = formatAsCurrency(nuevoSubtotal);
-        }
-        function formatAsCurrency(number) {
-            if (isNaN(number))
-                return "$0.00";
-            return new Intl.NumberFormat('es-CR', {// Ejemplo: Español de Costa Rica
-                style: 'currency',
-                currency: 'CRC' // Ejemplo: Colon Costarricense. Cambie a 'USD', 'EUR', etc.
-            }).format(number);
-        }
-        window.onload = calcularSubtotalItem;
-    </script>
-</section>
-
 <!-- Fragmento 4, muestra la información general de la orden -->
 <section th:fragment="detalleOrden" class="container py-5">
     <div class="card shadow-lg mx-auto" style="max-width: 900px;">
@@ -240,7 +97,7 @@
                 </div>
                 <div class="col-md-6 text-md-right">
                     <h5>[[#{orden.cliente}]]</h5>
-                    <p><strong>[[#{usuario.nombre}]]:</strong> <span th:text="${orden.usuario.username}">Juan Perez</span></p>
+                    <p><strong>[[#{usuario.username}]]:</strong> <span th:text="${orden.usuario.username}">Juan Perez</span></p>
                     <p><strong>[[#{usuario.correo}]]:</strong> <span th:text="${orden.usuario.correo}">correo@ejemplo.com</span></p>
                 </div>
             </div>
@@ -251,20 +108,22 @@
                     <thead class="thead-light">
                         <tr>
                             <th>[[#{anuncio.descripcion}]]</th>
+                            <th class="text-center">[[#{carrito.region}]]</th>
+                            <th class="text-center">[[#{carrito.plataforma}]]</th>
                             <th class="text-center">[[#{carrito.cantidad}]]</th>
-                            <th class="text-right">[[#{anuncio.precio}]]</th>
-                            <th class="text-right">[[#{carrito.total}]]</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr th:each="ordenLlave, iterStat : ${orden.ordenLlaves}">
                             <td th:text="${ordenLlave.llave.varianteProducto.producto.nombreProducto}">Laptop Xtreme</td>
+                            <td th:text="${ordenLlave.llave.varianteProducto.region.nombreRegion}">Laptop Xtreme</td>
+                            <td th:text="${ordenLlave.llave.varianteProducto.plataforma.nombrePlataforma}">Laptop Xtreme</td>
                             <td class="text-end" th:text="${#numbers.formatCurrency(ordenLlave.precioPagado)}">$520.00</td>
                         </tr>
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="3" class="text-end"><strong>[[#{carrito.totalCompra}]]:</strong></td>
+                            <td class="text-end"><strong>[[#{carrito.totalCompra}]]:</strong></td>
                             <td class="text-end text-success">
                                 <strong class="h5" th:text="${#numbers.formatCurrency(orden.precioTotal)}">$1,040.00</strong>
                             </td>

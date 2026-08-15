@@ -3,6 +3,8 @@ package com.fidegamestore.service;
 import com.fidegamestore.domain.*;
 import com.fidegamestore.repository.OrdenRepository;
 import java.util.NoSuchElementException;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,5 +27,10 @@ public class OrdenService {
         
         // El resultado es una Orden con todas las relaciones (usuario, ventas, producto) 
         // ya inicializadas, lista para ser usada en el Controller y la vista Thymeleaf.
+    }
+    
+    @Transactional(readOnly = true) // Solo lectura, mejor rendimiento
+    public List<Orden> getAllOrdenes() {
+        return ordenRepository.findAllOrdenes();
     }
 }

@@ -1,3 +1,68 @@
+/* Header */
+.header {
+    background-color: #03045e;
+}
+
+/* Navbar text and links */
+.header .navbar-brand,
+.header .nav-link {
+    color: white !important;
+}
+
+/* Hover effect */
+.header .navbar-brand:hover,
+.header .nav-link:hover {
+    color: #caf0f8 !important;
+}
+
+/* Dropdown menu */
+.header .dropdown-menu {
+    background-color: white;
+}
+
+.header .dropdown-item {
+    color: #03045e;
+}
+
+.header .dropdown-item:hover {
+    background-color: #caf0f8;
+    color: #03045e;
+}
+
+/* Navbar toggler */
+.header .navbar-toggler {
+    border-color: white;
+}
+
+.header .navbar-toggler-icon {
+    filter: brightness(0) invert(1);
+}
+
+/* Logout button */
+.header button.nav-link {
+    color: white !important;
+    background: transparent;
+    border: none;
+}
+
+/* User image */
+.header .round-circle {
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Total de plataformas */
+.total-elementos {
+    background-color: #00b4d8;
+    color: white;
+}
+
+/* Header de la tabla */
+.header-tablas {
+    background-color: #0077b6;
+    color: white;
+}
+
 .action-buttons {
     opacity: 0;
     display: flex;
@@ -7,4 +72,14 @@
 
 tr:hover .action-buttons {
     opacity: 1;
+}
+
+.header-tablas .nav-link {
+    color: white;
+    font-weight: normal;
+}
+
+.header-tablas .nav-link.active {
+    color: white;
+    font-weight: bold;
 }
