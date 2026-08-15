@@ -69,7 +69,7 @@
                                 <tr>
                                     <th>Id</th>
                                     <th>[[#{orden.usuario}]]</th>
-                                    <th>[[#{orden.precioTotal}]]</th>
+                                    <th>[[#{orden.precio_total}]]</th>
                                     <th>[[#{orden.fecha_creacion}]]</th>
                                     <th>[[#{orden.estado}]]</th>
                                     <th>[[#{orden.fecha_modificacion}]]</th>
@@ -81,7 +81,14 @@
                                     <td>[[${o.usuario.username}]]</td>
                                     <td>[[${#numbers.formatCurrency(o.precioTotal)}]]</td>
                                     <td>[[${#temporals.format(o.fechaCreacion, 'dd-MM-yyyy hh:mm')}]]</td>
-                                    <td>[[${o.estadoOrden.estadoOrden}]]</td>
+                                    <td>
+                                        <span class="badge"
+                                              th:classappend="${o.estadoOrden.estadoOrden == 'Completada'} ? ' bg-success' :
+                                              (${o.estadoOrden.estadoOrden == 'En disputa'} ? ' bg-warning text-dark' :
+                                              ' bg-danger')">
+                                            [[${o.estadoOrden.estadoOrden}]]
+                                        </span>
+                                    </td>
                                     <td>[[${#temporals.format(o.fechaModificacion, 'dd-MM-yyyy hh:mm')}]]</td>
                                     <td sec:authorize="hasRole('ROLE_Administrador')">
                                         <div class="action-buttons">
@@ -132,8 +139,8 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th>[[#{anuncio.descripcion}]]</th>
-                                    <th class="text-center">[[#{carrito.region}]]</th>
-                                    <th class="text-center">[[#{carrito.plataforma}]]</th>
+                                    <th class="text-center">[[#{orden.region}]]</th>
+                                    <th class="text-center">[[#{orden.plataforma}]]</th>
                                     <th class="text-center">[[#{carrito.cantidad}]]</th>
                                 </tr>
                             </thead>
@@ -157,8 +164,8 @@
                     </div>
 
                     <div class="text-center">
-                        <a th:href="@{/}" class="btn btn-primary btn-lg d-print-none">
-                            <i class='fas fa-home'></i> [[#{accion.regresar}]]
+                        <a th:href="@{/orden/listado}" class="btn btn-success btn-lg d-print-none">
+                            <i class='fas fa-reply'></i> [[#{accion.regresar}]]
                         </a>
                         <button onclick="window.print()" class="btn btn-primary btn-lg d-print-none">
                             <i class='fas fa-print'></i> [[#{accion.imprimir}]]
