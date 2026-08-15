@@ -15,12 +15,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/producto")
 public class ProductoController {
-    
+
     private final ProductoService productoService;
     private final CategoriaService categoriaService;
     private final MessageSource messageSource;
@@ -30,21 +31,23 @@ public class ProductoController {
         this.categoriaService = categoriaService;
         this.messageSource = messageSource;
     }
-    
+
     @GetMapping("/listado")
     public String listado(Model model) {
         var productos = productoService.getProductos(false);
         model.addAttribute("productos", productos);
         model.addAttribute("totalProductos", productos.size());
+        
         var categorias = categoriaService.getCategorias(true);
         model.addAttribute("categorias", categorias);
         return "/producto/listado";
     }
-    
+
     @PostMapping("/guardar")
     public String guardar(@Valid Producto producto,
+            @RequestParam MultipartFile imagenFile,
             RedirectAttributes redirectAttributes) {
-        productoService.save(producto);
+        productoService.save(producto, imagenFile);
         redirectAttributes.addFlashAttribute(
                 "todoOk",
                 messageSource.getMessage("mensaje.actualizado", null, Locale.getDefault())
@@ -93,9 +96,36 @@ public class ProductoController {
         }
 
         model.addAttribute("producto", productoOpt.get());
+        
         var categorias = categoriaService.getCategorias(true);
         model.addAttribute("categorias", categorias);
 
         return "/producto/modifica";
+    }
+
+    @GetMapping("/")
+    public String cargarListaTodosProductos(Model model) {
+        var lista = productoService.getProductos(true);
+        model.addAttribute("productos", lista);
+        var categorias = categoriaService.getCategorias(true);
+        model.addAttribute("categorias", categorias);
+        return "/listado";
+    }
+
+    @GetMapping("/consultas/{idCategoria}")
+    public String listado(@PathVariable("idCategoria") Integer idCategoria, Model model) {
+        model.addAttribute("idCategoriaActual", idCategoria);
+        var categoriaOptional = categoriaService.getCategoria(idCategoria);
+        if (categoriaOptional.isEmpty()) {
+            //Puede ser que no se exista la categoria buscada...
+            model.addAttribute("productos", java.util.Collections.emptyList());
+        } else {
+            var categoria = categoriaOptional.get();
+            var productos = productoService.findProductoByIdCategoria(categoria.getIdCategoria());
+            model.addAttribute("productos", productos);
+        }
+        var categorias = categoriaService.getCategorias(true);
+        model.addAttribute("categorias", categorias);
+        return "/producto/listado";
     }
 }

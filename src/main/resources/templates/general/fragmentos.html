@@ -33,10 +33,11 @@
                     <!-- Panel para controlar los productos del sitio -->
                     <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_Administrador')">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
-                            [[#{admin.producto}]]</a>
+                            [[#{admin.detalles}]]</a>
                         
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" th:href="@{/usuario/listado}">[[#{admin.registrar}]]</a></li>                                    
+                            <li><a class="dropdown-item" th:href="@{/anuncio/listado}">[[#{admin.registrar}]]</a></li>  
+                            <li><a class="dropdown-item" th:href="@{/producto/listado}">[[#{admin.producto}]]</a></li> 
                             <li class="submenu submenu-md dropend">
                                 <a class="dropdown-item dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"
                                    onclick="event.stopPropagation();">

@@ -182,6 +182,7 @@ CREATE TABLE anuncio (
   fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_anuncio`),
+  unique (llave),
   foreign key fk_anuncio_variante_producto (id_variante_producto) references variante_producto(id_variante_producto))
   ENGINE = InnoDB;
 

@@ -2,7 +2,6 @@ package com.fidegamestore.repository;
 
 import com.fidegamestore.domain.Anuncio;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,5 +18,19 @@ public interface AnuncioRepository extends JpaRepository<Anuncio, Integer> {
         "WHERE c.idCategoria = :idCategoria AND a.activo = true ")
     List<Anuncio> findAnuncioByIdCategoria(@Param("idCategoria") Integer idCategoria);
     
+    @Query("SELECT a FROM Anuncio a " +
+        "LEFT JOIN FETCH a.varianteProducto vp " +       // Carga usuario
+        "LEFT JOIN FETCH vp.producto p " +       // Carga las ordenesLlave que tengan el mismo ID
+        "LEFT JOIN FETCH p.categoria c " )
+    List<Anuncio> findAllAnuncios();
     
+    
+    boolean existsByVarianteProducto_IdVarianteProducto(Integer idVarianteProducto);
+
+    boolean existsByVarianteProducto_IdVarianteProductoAndIdAnuncioNot(
+            Integer idVarianteProducto,
+            Integer idAnuncio
+    );
+    
+   
 }

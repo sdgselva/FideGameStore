@@ -15,12 +15,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UsuarioService {
-    
+
     private final UsuarioRepository usuarioRepository;
     private final RolRepository rolRepository;
     private final FirebaseStorageService firebaseStorageService;
     private final PasswordEncoder passwordEncoder;
-    
+
     public UsuarioService(UsuarioRepository usuarioRepository,
             RolRepository rolRepository,
             FirebaseStorageService firebaseStorageService,
@@ -30,7 +30,7 @@ public class UsuarioService {
         this.firebaseStorageService = firebaseStorageService;
         this.passwordEncoder = passwordEncoder;
     }
-    
+
     //Clases para traer la info del usuario dependiendo del parametro
     @Transactional(readOnly = true)
     public List<Usuario> getUsuarios(boolean activo) {
@@ -39,35 +39,35 @@ public class UsuarioService {
         }
         return usuarioRepository.findAll();
     }
-    
+
     @Transactional(readOnly = true)
     public Optional<Usuario> getUsuario(Integer idUsuario) {
         return usuarioRepository.findById(idUsuario);
     }
-    
+
     @Transactional(readOnly = true)
     public Optional<Usuario> getUsuarioPorUsername(String username) {
         return usuarioRepository.findByUsername(username);
     }
-    
+
     @Transactional(readOnly = true)
     public Optional<Usuario> getUsuarioPorUsernameYPassword(String username,
             String password) {
         return usuarioRepository.findByUsernameAndPassword(username, password);
     }
-    
+
     @Transactional(readOnly = true)
     public Optional<Usuario> getUsuarioPorUsernameOCorreo(String username,
             String correo) {
         return usuarioRepository.findByUsernameOrCorreo(username, correo);
     }
-    
+
     @Transactional(readOnly = true)
     public boolean existeUsuarioPorUsernameOCorreo(String username,
             String correo) {
         return usuarioRepository.existsByUsernameOrCorreo(username, correo);
     }
-    
+
     //Guarda el Usuario
     @Transactional
     public void save(Usuario usuario, MultipartFile imagenFile, boolean encriptaClave) {
@@ -84,14 +84,14 @@ public class UsuarioService {
         }
 
         //Se valida si la clave se va actualizar o si es un usuario nuevo se debe actualizar...
-        var asignarRol = false;
+        //var asignarRol = false;
         if (usuario.getIdUsuario() == null) {
             if (usuario.getPassword() == null || usuario.getPassword().isBlank()) {
                 throw new IllegalArgumentException("La contraseña es obligatoria para nuevos usuarios.");
             }
             //La primera vez como es activación no se encripta...
             usuario.setPassword(encriptaClave ? passwordEncoder.encode(usuario.getPassword()) : usuario.getPassword());
-            asignarRol = true;
+            //asignarRol = true;
         } else {
             if (usuario.getPassword() == null || usuario.getPassword().isBlank()) {
                 // El campo de password en el formulario viene vacío (no se desea actualizar).
@@ -106,9 +106,12 @@ public class UsuarioService {
             } else {
                 // El campo de password NO está vacío (se desea actualizar).
                 // Se encripta y se guarda la nueva contraseña.
+                Usuario usuarioExistente = usuarioRepository.findById(usuario.getIdUsuario())
+                        .orElseThrow(() -> new IllegalArgumentException("Usuario a modificar no encontrado."));
+                usuario.setRutaImagen(usuarioExistente.getRutaImagen());
                 usuario.setPassword(encriptaClave ? passwordEncoder.encode(usuario.getPassword()) : usuario.getPassword());
             }
-            
+
         }
         usuario = usuarioRepository.save(usuario);
         if (imagenFile != null && !imagenFile.isEmpty()) { //Si no está vacío... pasaron una imagen...            
@@ -120,12 +123,13 @@ public class UsuarioService {
             } catch (IOException e) {
             }
         }
-        if (asignarRol) {
-            //Si se está creando el usuario, se crea el rol por defecto "USER"
-            asignarRolPorUsername(usuario.getUsername(), "Usuario");
-        }
     }
-    
+
+    @Transactional
+    public void crearRolUsuario(Usuario usuario) {
+        asignarRolPorUsername(usuario.getUsername(), "Usuario");
+    }
+
     //Elimina al usuario
     @Transactional
     public void delete(Integer idUsuario) {
@@ -143,7 +147,7 @@ public class UsuarioService {
                     "No se puede eliminar el usuario. Tiene datos asociados.", e);
         }
     }
-    
+
     //Añade Rol Dependiendo del username
     @Transactional
     public Usuario asignarRolPorUsername(String username, String rolStr) {
@@ -160,7 +164,7 @@ public class UsuarioService {
         usuario.getRoles().add(rol);
         return usuarioRepository.save(usuario);
     }
-    
+
     @Transactional(readOnly = true)
     public List<String> getRolesNombres() {
         // Retorna una lista de Strings con el nombre de cada rol
@@ -168,7 +172,7 @@ public class UsuarioService {
                 .map(Rol::getNombreRol)
                 .toList();
     }
-    
+
     @Transactional
     public Usuario eliminarRol(String username, Integer idRol) {
         Optional<Usuario> usuarioOpt = usuarioRepository.findByUsername(username);
@@ -183,5 +187,5 @@ public class UsuarioService {
         // Guarda el usuario con la colección de roles modificada
         return usuarioRepository.save(usuario);
     }
-    
+
 }
