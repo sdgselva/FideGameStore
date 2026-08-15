@@ -1,6 +1,6 @@
-<!-- fragmento 1 para Agregar plataforma en ventana modal -->
+<!-- Este fragmento permite agregar un nuevo elemento cuadno se presiona el boton de agregar -->
 <section th:fragment="agregar">
-    <!-- Modal -->
+    <!-- Esta es la ventana modal -->
     <div class="modal fade" id="agregarPlataformaModal"  tabindex="-1" 
          aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -32,65 +32,48 @@
     </div>
 </section>
 
-<!-- fragmento 2 para el listado de plataformas -->
+<!-- Este fragmento permite mostrar la lista de elementos y los botonoes de modificar y eliminar -->
 <section th:fragment="listado" class="p-3">
+    <!-- Linea de total de elementos y del boton agregar-->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card text-center total-elementos">
+                <div class="card-body py-2">
+                    <div class="d-flex justify-content-between align-items-center px-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <h5 class="mb-0">
+                                [[#{plataforma.total}]]
+                            </h5>
+                            <h4 class="mb-0">
+                                <i class="fas fa-layer-group"></i>
+                                [[${totalPlataformas}]]
+                            </h4>
+                        </div>
+                        <button type="button"
+                                class="btn btn-light"
+                                sec:authorize="hasRole('ROLE_Administrador')"
+                                data-bs-toggle="modal"
+                                data-bs-target="#agregarPlataformaModal">
+                            <i class="fa-solid fa-plus"></i>
+                            [[#{plataforma.agregar}]]
+                        </button>
 
-<!-- Total de plataformas + Agregar -->
-<div class="row mb-3">
-    <div class="col-12">
-        <div class="card text-center total-plataformas">
-            <div class="card-body py-2">
-                <div class="d-flex justify-content-between align-items-center px-3">
-
-                    <!-- Total -->
-                    <div class="d-flex align-items-center gap-2">
-                        <h5 class="mb-0">
-                            [[#{plataforma.total}]]
-                        </h5>
-
-                        <h4 class="mb-0">
-                            <i class="fas fa-layer-group"></i>
-                            [[${totalPlataformas}]]
-                        </h4>
                     </div>
-
-                    <!-- Agregar -->
-                    <button type="button"
-                            class="btn btn-light"
-                            sec:authorize="hasRole('ROLE_Administrador')"
-                            data-bs-toggle="modal"
-                            data-bs-target="#agregarPlataformaModal">
-
-                        <i class="fa-solid fa-plus"></i>
-                        [[#{plataforma.agregar}]]
-
-                    </button>
-
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-
-<!-- Tabla -->
-<div class="row">
-    <div class="col-12">
-
-        <div class="card">
-
-            <div class="card-header header-plataformas">
-                <h4 class="mb-0">
-                    [[#{plataforma.listado}]]
-                </h4>
-            </div>
-
-            <div class="card-body">
-
+    <!-- Tabla que da la lista de elementos -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header header-tablas">
+                    <h4 class="mb-0">[[#{plataforma.listado}]]</h4>
+                </div>
+                <div class="card-body">
                     <div th:if="${plataformas != null and !plataformas.empty}">
-
                         <table class="table table-striped table-hover mb-0">
-
                             <thead>
                                 <tr>
                                     <th>Id</th>
@@ -99,38 +82,21 @@
                                     <th></th>
                                 </tr>
                             </thead>
-
                             <tbody>
-
                                 <tr th:each="c : ${plataformas}">
-
-                                    <td>
-                                        [[${c.idPlataforma}]]
-                                    </td>
-
-                                    <td>
-                                        [[${c.nombrePlataforma}]]
-                                    </td>
-
-                                    <td th:text="${c.activo} ? 'Activa':'Inactiva'">
-                                    </td>
-
+                                    <td>[[${c.idPlataforma}]]</td>
+                                    <td>[[${c.nombrePlataforma}]]</td>
+                                    <td th:text="${c.activo} ? 'Activo':'Inactivo'"></td>
                                     <td sec:authorize="hasRole('ROLE_Administrador')">
-
                                         <div class="action-buttons">
-
                                             <button type="button"
                                                     class="btn btn-danger"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#confirmModal"
                                                     th:data-bs-id="${c.idPlataforma}"
-                                                    th:data-bs-nombrePlataforma="${c.nombrePlataforma}">
-
-                                                <i class="fa-solid fa-trash"></i>
-                                                [[#{accion.eliminar}]]
-
+                                                    th:data-bs-nombre="${c.nombrePlataforma}">
+                                                <i class="fa-solid fa-trash"></i> [[#{accion.eliminar}]]
                                             </button>
-
                                             <button type="button"
                                                     class="btn btn-warning"
                                                     data-bs-toggle="modal"
@@ -138,40 +104,24 @@
                                                     th:data-bs-id="${c.idPlataforma}"
                                                     th:data-bs-nombre="${c.nombrePlataforma}"
                                                     th:data-bs-activo="${c.activo}">
-
-                                                <i class="fas fa-pencil-alt"></i>
-                                                [[#{accion.actualizar}]]
-
+                                                <i class="fas fa-pencil-alt"></i> [[#{accion.actualizar}]]
                                             </button>
-
                                         </div>
-
                                     </td>
-
                                 </tr>
-
                             </tbody>
-
                         </table>
-
                     </div>
-
-                    <div class="text-center p-2"
-                         th:if="${plataformas == null or plataformas.empty}">
-
+                    <div class="text-center p-2" th:if="${plataformas == null or plataformas.empty}">
                         <span>[[#{lista.vacia}]]</span>
-
                     </div>
-
                 </div>
             </div>
-
         </div>
     </div>
-
 </section>
 
-<!-- 4 fragmento que se utiliza para confirmar que se desea eliminar una plataforma -->
+<!-- Este fragmento desea confirmar si se desea eliminar un elemento -->
 <section th:fragment="confirmarEliminar">
     <div class="modal fade" 
          id="confirmModal" 
@@ -205,99 +155,78 @@
         </div>
     </div>
 
-    <!-- Editar Modal -->
-    <div class="modal fade" id="editarPlataformaModal"
-         tabindex="-1"
-         aria-labelledby="editarPlataformaModalLabel"
-         aria-hidden="true">
 
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-                <div class="modal-header bg-warning">
-                    <h1 class="modal-title fs-5" id="editarPlataformaModalLabel">
-                        <i class="fa-solid fa-pencil"></i>
-                        [[#{accion.actualizar}]]
-                    </h1>
-
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                </div>
-
-                <form th:action="@{/plataforma/guardar}"
-                      method="post"
-                      th:object="${plataforma}">
-
-                    <div class="modal-body">
-
-                        <input type="hidden"
-                               id="editarIdPlataforma"
-                               name="idPlataforma"/>
-
-                        <div class="mb-3">
-                            <label for="editarNombrePlataforma" class="form-label">
-                                [[#{plataforma.nombre}]]
-                            </label>
-
-                            <input type="text"
-                                   id="editarNombrePlataforma"
-                                   name="nombrePlataforma"
-                                   class="form-control"
-                                   required/>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="editarActivo" class="form-label">
-                                [[#{plataforma.activo}]]
-                            </label>
-
-                            <input type="checkbox"
-                                   id="editarActivo"
-                                   name="activo"
-                                   class="form-check-input"/>
-                        </div>
-
-                    </div>
-
-                    <div class="modal-footer">
-
+    <section th:fragment="modifica">
+        <!-- Este div permite llamar al modal de modificar elementos desde el boton en la lista -->
+        <div class="modal fade" id="editarPlataformaModal" tabindex="-1" aria-labelledby="editarPlataformaModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning">
+                        <h1 class="modal-title fs-5" id="editarPlataformaModalLabel">
+                            <i class="fa-solid fa-pencil"></i> [[#{accion.actualizar}]]
+                        </h1>
                         <button type="button"
-                                class="btn btn-secondary"
-                                data-bs-dismiss="modal">
-                            <i class="fa-solid fa-xmark"></i>
-                            [[#{accion.cerrar}]]
-                        </button>
-
-                        <button type="submit"
-                                class="btn btn-warning">
-                            <i class="fa-solid fa-check"></i>
-                            [[#{accion.guardar}]]
-                        </button>
-
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                     </div>
-
-                </form>
+                    <form th:action="@{/plataforma/guardar}" method="post" th:object="${plataforma}">
+                        <div class="modal-body">
+                            <input type="hidden"
+                                   id="editarIdPlataforma"
+                                   name="idPlataforma"/>
+                            <div class="mb-3">
+                                <label for="editarNombrePlataforma" class="form-label"> [[#{plataforma.nombre}]]</label>
+                                <input type="text"
+                                       id="editarNombre"
+                                       name="nombrePlataforma"
+                                       class="form-control"
+                                       required/>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editarActivo" class="form-label">[[#{plataforma.activo}]]</label>
+                                <input type="checkbox"
+                                       id="editarActivo"
+                                       name="activo"
+                                       class="form-check-input"/>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button"
+                                    class="btn btn-secondary"
+                                    data-bs-dismiss="modal">
+                                <i class="fa-solid fa-xmark"></i>
+                                [[#{accion.cerrar}]]
+                            </button>
+                            <button type="submit"
+                                    class="btn btn-warning">
+                                <i class="fa-solid fa-check"></i>
+                                [[#{accion.guardar}]]
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
+        
+        <!-- Este script permite capturar la informacion de cada elemento en  la tabla para popular el div de modificar elemento --> 
+        <script>
+            const editarModal = document.getElementById('editarPlataformaModal');
 
-    <script>
-        const editarModal = document.getElementById('editarPlataformaModal');
+            editarModal.addEventListener('show.bs.modal', function (event) {
 
-        editarModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
 
-            const button = event.relatedTarget;
+                const id = button.getAttribute('data-bs-id');
+                const nombre = button.getAttribute('data-bs-nombre');
+                const activo = button.getAttribute('data-bs-activo');
 
-            const id = button.getAttribute('data-bs-id');
-            const nombre = button.getAttribute('data-bs-nombre');
-            const activo = button.getAttribute('data-bs-activo');
+                document.getElementById('editarIdPlataforma').value = id;
+                document.getElementById('editarNombre').value = nombre;
+                document.getElementById('editarActivo').checked = activo === 'true';
+            });
+        </script>
+    </section>
 
-            document.getElementById('editarIdPlataforma').value = id;
-            document.getElementById('editarNombrePlataforma').value = nombre;
-            document.getElementById('editarActivo').checked = activo === 'true';
-        });
-    </script>
-</section>
+
 

@@ -1,11 +1,8 @@
 package com.fidegamestore.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDateTime;
 import lombok.Data;
 
 @Data
@@ -29,4 +26,10 @@ public class Ticket implements Serializable {
     
     @Column(columnDefinition = "TEXT")
     private String descripcion;
+    
+    @Column(name = "fecha_creacion", updatable = false)
+    private LocalDateTime fechaCreacion;
+
+    @Column(name = "fecha_modificacion")
+    private LocalDateTime fechaModificacion;
 }

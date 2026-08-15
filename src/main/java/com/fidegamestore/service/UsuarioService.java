@@ -100,12 +100,15 @@ public class UsuarioService {
                         .orElseThrow(() -> new IllegalArgumentException("Usuario a modificar no encontrado."));
 
                 // Asignamos la contraseña existente al objeto "usuario" antes de guardarlo.                
-                usuario.setPassword(encriptaClave ? passwordEncoder.encode(usuarioExistente.getPassword()) : usuarioExistente.getPassword());
+                /////usuario.setPassword(encriptaClave ? passwordEncoder.encode(usuarioExistente.getPassword()) : usuarioExistente.getPassword());
+                usuario.setPassword(usuarioExistente.getPassword());
+                usuario.setRutaImagen(usuarioExistente.getRutaImagen());
             } else {
                 // El campo de password NO está vacío (se desea actualizar).
                 // Se encripta y se guarda la nueva contraseña.
                 usuario.setPassword(encriptaClave ? passwordEncoder.encode(usuario.getPassword()) : usuario.getPassword());
             }
+            
         }
         usuario = usuarioRepository.save(usuario);
         if (imagenFile != null && !imagenFile.isEmpty()) { //Si no está vacío... pasaron una imagen...            

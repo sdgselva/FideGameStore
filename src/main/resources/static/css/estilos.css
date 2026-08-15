@@ -52,15 +52,15 @@
 }
 
 /* Total de plataformas */
-.total-plataformas {
+.total-elementos {
     background-color: #00b4d8;
     color: white;
 }
 
 /* Header de la tabla */
-.header-plataformas {
-    background-color: #caf0f8;
-    color: #03045e;
+.header-tablas {
+    background-color: #0077b6;
+    color: white;
 }
 
 .action-buttons {
@@ -72,4 +72,14 @@
 
 tr:hover .action-buttons {
     opacity: 1;
+}
+
+.header-tablas .nav-link {
+    color: white;
+    font-weight: normal;
+}
+
+.header-tablas .nav-link.active {
+    color: white;
+    font-weight: bold;
 }
