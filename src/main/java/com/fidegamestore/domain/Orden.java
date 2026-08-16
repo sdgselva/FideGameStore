@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,5 +40,5 @@ public class Orden implements Serializable {
     private LocalDateTime fechaModificacion;
     
     @OneToMany(mappedBy = "orden", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrdenLlave> ordenLlaves;
+    private List<OrdenLlave> ordenLlaves = new ArrayList<>();
 }

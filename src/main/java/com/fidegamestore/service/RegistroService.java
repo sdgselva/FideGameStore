@@ -2,10 +2,8 @@ package com.fidegamestore.service;
 
 import com.fidegamestore.domain.Constante;
 import com.fidegamestore.domain.Usuario;
-import jakarta.mail.MessagingException;
 import java.util.Locale;
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.stereotype.Service;
@@ -49,7 +47,7 @@ public class RegistroService {
         usuarioService.crearRolUsuario(usuario);
     }
 
-    public Model crearUsuario(Model model, Usuario usuario) throws MessagingException {
+    public Model crearUsuario(Model model, Usuario usuario) {
         String mensaje;
         try {
             String clave = demeClave();
@@ -58,7 +56,7 @@ public class RegistroService {
             usuarioService.save(usuario, null,false);
             enviaCorreoActivar(usuario, clave);
             mensaje = String.format(messageSource.getMessage("registro.mensaje.activacion.ok", null, Locale.getDefault()), usuario.getCorreo());
-        } catch (MessagingException | NoSuchMessageException e) {
+        } catch (NoSuchMessageException e) {
             mensaje = String.format(messageSource.getMessage("registro.mensaje.usuario.o.correo", null, Locale.getDefault()), usuario.getUsername(), usuario.getCorreo());
         }
         model.addAttribute("titulo", messageSource.getMessage("registro.activar", null, Locale.getDefault()));
@@ -67,7 +65,7 @@ public class RegistroService {
     }
 
     public Model recordarUsuario(Model model, Usuario usuario)
-            throws MessagingException {
+             {
         String mensaje;
         Optional<Usuario> usuarioOpt = usuarioService.getUsuarioPorUsernameOCorreo(usuario.getUsername(), usuario.getCorreo());
         if (!usuarioOpt.isEmpty()) {
@@ -95,14 +93,14 @@ public class RegistroService {
         return clave;
     }
 
-    private void enviaCorreoActivar(Usuario usuario, String clave) throws MessagingException {
+    private void enviaCorreoActivar(Usuario usuario, String clave)  {
         String mensaje = messageSource.getMessage("registro.correo.activar", null, Locale.getDefault());
         mensaje = String.format(mensaje, usuario.getUsername(), servidor, usuario.getUsername(), clave);
         String asunto = messageSource.getMessage("registro.mensaje.activacion", null, Locale.getDefault());
         correoService.enviarCorreoHtml(usuario.getCorreo(), asunto, mensaje);
     }
 
-    private void enviaCorreoRecordar(Usuario usuario, String clave) throws MessagingException {
+    private void enviaCorreoRecordar(Usuario usuario, String clave)  {
         String mensaje = messageSource.getMessage("registro.correo.recordar", null, Locale.getDefault());
         mensaje = String.format(mensaje, usuario.getUsername(), servidor, usuario.getUsername(), clave);
         String asunto = messageSource.getMessage("registro.mensaje.recordar", null, Locale.getDefault());
