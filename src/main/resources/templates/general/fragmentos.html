@@ -86,7 +86,7 @@
                 <ul class="navbar-nav" sec:authorize="hasRole('ROLE_Usuario')">  
                     <!-- Panel para controlar los productos del sitio -->
                     <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_Usuario')">
-                    <li class="nav-item px-2"><a class="nav-link" th:href="@{/orden_usuario/listado}">[[#{admin.ordenes}]]</a></li>
+                    <li class="nav-item px-2"><a class="nav-link" th:href="@{/orden/ordenesUsuario}">[[#{admin.ordenes}]]</a></li>
                     <li class="nav-item px-2"><a class="nav-link" th:href="@{/usuario/perfil}">[[#{perfil}]]</a></li>
                 </ul>
 

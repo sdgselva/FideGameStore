@@ -22,7 +22,7 @@ public interface OrdenRepository extends JpaRepository<Orden, Integer>{
     Optional<Orden> findByIdOrdenConDetalle(@Param("idOrden") Integer idOrden);
     
     @Query("SELECT o FROM Orden o " +
-            "LEFT JOIN FETCH o.usuario u" +       // Carga usuario
+            "LEFT JOIN FETCH o.usuario u " +       // Carga usuario
             "LEFT JOIN FETCH o.estadoOrden eo " +       // Carga las ordenesLlave que tengan el mismo ID
             "LEFT JOIN FETCH o.ordenLlaves ol " +       // Carga las ordenesLlave que tengan el mismo ID
             "LEFT JOIN FETCH ol.llave l " +        // Carga la llave de cada OrdenLlave
@@ -31,7 +31,7 @@ public interface OrdenRepository extends JpaRepository<Orden, Integer>{
             "LEFT JOIN FETCH vp.region " +      //Carga la region de varianteProducto
             "LEFT JOIN FETCH vp.plataforma " +      // Carga la plataforma de varianteProducto
             "WHERE u.username = :username")
-    Optional<Orden> findByIdOrdenPorUsername(@Param("username") String username);
+    List<Orden> findByIdOrdenPorUsername(@Param("username") String username);
     
     @Query("SELECT o FROM Orden o " +
             "LEFT JOIN FETCH o.usuario " +       // Carga usuario
