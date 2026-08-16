@@ -1,5 +1,6 @@
 package com.fidegamestore.service;
 
+import com.fidegamestore.domain.Llave;
 import com.fidegamestore.domain.Orden;
 import com.fidegamestore.domain.OrdenLlave;
 import com.fidegamestore.domain.Plataforma;
@@ -125,6 +126,7 @@ public class CorreoService {
         html.append("<th style='padding:12px; border:1px solid #ddd;'>Región</th>");
         html.append("<th style='padding:12px; border:1px solid #ddd;'>Plataforma</th>");
         html.append("<th style='padding:12px; border:1px solid #ddd;'>Precio</th>");
+        html.append("<th style='padding:12px; border:1px solid #ddd;'>Llave</th>");
 
         html.append("</tr>");
         html.append("</thead>");
@@ -147,6 +149,8 @@ public class CorreoService {
                     .getLlave()
                     .getVarianteProducto()
                     .getPlataforma();
+            
+            Llave llave = ordenLlave.getLlave();
 
             html.append("<tr>");
 
@@ -165,46 +169,16 @@ public class CorreoService {
             html.append("<td style='padding:12px; border:1px solid #ddd; text-align:right;'>");
             html.append(ordenLlave.getPrecioPagado());
             html.append("</td>");
+            
+            html.append("<td style='padding:12px; border:1px solid #ddd; text-align:right;'>");
+            html.append(llave.getLlave());
+            html.append("</td>");
 
             html.append("</tr>");
         }
 
         html.append("</tbody>");
         html.append("</table>");
-
-        // KEYS
-        html.append("<h2 style='margin-top:30px;'>Tus claves</h2>");
-
-        html.append("<p>");
-        html.append("Estas son las claves adquiridas con esta orden. ");
-        html.append("Guárdalas en un lugar seguro.");
-        html.append("</p>");
-
-        for (OrdenLlave ordenLlave : orden.getOrdenLlaves()) {
-
-            Producto producto = ordenLlave
-                    .getLlave()
-                    .getVarianteProducto()
-                    .getProducto();
-
-            html.append("<div style='margin:15px 0; padding:15px; background-color:#f8f9fa; border:1px solid #ddd; border-radius:6px;'>");
-
-            html.append("<p style='margin:0 0 8px 0;'>");
-            html.append("<strong>");
-            html.append(producto.getNombreProducto());
-            html.append("</strong>");
-            html.append("</p>");
-
-            html.append("<div style='padding:12px; background-color:#e9ecef; border-radius:5px; font-family:monospace; font-size:16px;'>");
-
-            html.append(ordenLlave
-                    .getLlave()
-                    .getLlave());
-
-            html.append("</div>");
-
-            html.append("</div>");
-        }
 
         // TOTAL
         html.append("<div style='margin-top:30px; padding:20px; background-color:#e9f7ef; border-radius:6px; text-align:right;'>");

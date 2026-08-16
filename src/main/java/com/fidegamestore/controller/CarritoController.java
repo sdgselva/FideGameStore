@@ -159,14 +159,6 @@ public class CarritoController {
 
             System.out.println("Orden cargada con detalles.");
 
-            // 3. Intentar enviar correo
-            try {
-                correoService.enviarCorreoOrden(orden);
-                System.out.println("Correo enviado correctamente.");
-            } catch (Exception e) {
-                System.out.println("ERROR AL ENVIAR EL CORREO:");
-                e.printStackTrace();
-            }
 
             // 2. Limpiar el carrito de la sesión después de una compra exitosa
             carritoService.limpiarCarrito(session);
@@ -201,6 +193,9 @@ public class CarritoController {
 
         // 1. Obtener la orden COMPLETA (incluyendo ordenLlaves)        
         Orden orden = ordenService.getOrdenConDetalle(idOrden);
+        
+        //Envia el correo con las llaves
+        correoService.enviarCorreoOrden(orden);
 
         model.addAttribute("orden", orden);
         return "/carrito/verOrden"; // Nombre del archivo Thymeleaf
