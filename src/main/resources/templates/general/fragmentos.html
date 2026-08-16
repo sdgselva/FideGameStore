@@ -26,15 +26,15 @@
             <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
+
             <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                 <ul class="navbar-nav" sec:authorize="hasRole('ROLE_Administrador') or hasRole('ROLE_Soporte')">  
-                    
+
                     <!-- Panel para controlar los productos del sitio -->
                     <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_Administrador')">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
                             [[#{admin.detalles}]]</a>
-                        
+
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" th:href="@{/anuncio/listado}">[[#{admin.registrar}]]</a></li>  
                             <li><a class="dropdown-item" th:href="@{/producto/listado}">[[#{admin.producto}]]</a></li> 
@@ -47,17 +47,17 @@
                                     <li><a class="dropdown-item" th:href="@{/categoria/listado}">[[#{admin.etiquetaCategoria}]]</a></li>
                                     <li><a class="dropdown-item" th:href="@{/region/listado}">[[#{admin.etiquetaRegion}]]</a></li>
                                     <li><a class="dropdown-item" th:href="@{/plataforma/listado}">[[#{admin.etiquetaPlataforma}]]</a></li>
-                                    
+
                                 </ul>
                             </li>
                         </ul>
                     </li>
-                    
+
                     <!-- Panel para manejar detalles del sitio mismo -->
                     <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_Administrador')">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
                             [[#{admin.sitio}]]</a>
-                        
+
                         <ul class="dropdown-menu">
                             <li class="submenu submenu-md dropend">
                                 <a class="dropdown-item dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"
@@ -81,8 +81,15 @@
                         </ul>
                     </li>
                     <li class="nav-item px-2"><a class="nav-link" th:href="@{/orden/listado}">[[#{admin.ordenes}]]</a></li>
-                    <li class="nav-item px-2"><a class="nav-link" th:href="@{/ticket/listado}">[[#{soporte.tickets}]]</a></li>
                 </ul>
+
+                <ul class="navbar-nav" sec:authorize="hasRole('ROLE_Usuario')">  
+                    <!-- Panel para controlar los productos del sitio -->
+                    <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_Usuario')">
+                    <li class="nav-item px-2"><a class="nav-link" th:href="@{/orden_usuario/listado}">[[#{admin.ordenes}]]</a></li>
+                    <li class="nav-item px-2"><a class="nav-link" th:href="@{/usuario/perfil}">[[#{perfil}]]</a></li>
+                </ul>
+
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
@@ -120,11 +127,11 @@
                         </form>
                     </li>
                 </ul>  
-                    <div id="resultBlock" class="ms-3">
-                        <a th:href="@{/carrito/listado}" class="btn btn-primary text-white">
-                            <i class="fas fa-shopping-cart me-1"></i> Ver carrito
-                        </a>
-                    </div>   
+                <div id="resultBlock" class="ms-3">
+                    <a th:href="@{/carrito/listado}" class="btn btn-primary text-white">
+                        <i class="fas fa-shopping-cart me-1"></i> Ver carrito
+                    </a>
+                </div>   
             </div>
         </div>
     </nav>

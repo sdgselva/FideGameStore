@@ -126,6 +126,39 @@ public class UsuarioService {
     }
 
     @Transactional
+    public void saveSelf(
+            Integer idUsuario,
+            String username,
+            String correo,
+            MultipartFile imagenFile) {
+
+        Usuario usuario = usuarioRepository.findById(idUsuario)
+                .orElseThrow(()
+                        -> new IllegalArgumentException("Usuario no encontrado."));
+
+        usuario.setUsername(username);
+        usuario.setCorreo(correo);
+
+        if (imagenFile != null && !imagenFile.isEmpty()) {
+            try {
+                String rutaImagen = firebaseStorageService.uploadImage(
+                        imagenFile,
+                        "usuario",
+                        usuario.getIdUsuario()
+                );
+
+                usuario.setRutaImagen(rutaImagen);
+
+            } catch (IOException e) {
+                throw new IllegalStateException(
+                        "No se pudo actualizar la imagen.", e);
+            }
+        }
+
+        usuarioRepository.save(usuario);
+    }
+
+    @Transactional
     public void crearRolUsuario(Usuario usuario) {
         asignarRolPorUsername(usuario.getUsername(), "Usuario");
     }
