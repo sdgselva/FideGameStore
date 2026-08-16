@@ -89,16 +89,6 @@ create table region (
   index ndx_nombre_region (nombre_region))
   ENGINE = InnoDB;
 
--- Tabla de estatus de tickets
-create table estado_ticket (
-  id_estado_ticket INT NOT NULL AUTO_INCREMENT,
-  estado_ticket VARCHAR(50) NOT NULL,
-  activo boolean,
-  PRIMARY KEY (id_estado_ticket),
-  unique (estado_ticket),
-  index ndx_estado_ticket (estado_ticket))
-  ENGINE = InnoDB;
-
 -- Tabla de estado de ordenes
 create table estado_orden (
   id_estado_orden INT NOT NULL AUTO_INCREMENT,
@@ -182,7 +172,6 @@ CREATE TABLE anuncio (
   fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_anuncio`),
-  unique (llave),
   foreign key fk_anuncio_variante_producto (id_variante_producto) references variante_producto(id_variante_producto))
   ENGINE = InnoDB;
 
@@ -212,20 +201,6 @@ CREATE TABLE orden_llave (
   foreign key fk_orden_llave_llave (id_llave) references llave(id_llave))
   ENGINE = InnoDB;
 
--- Tabla de tickets
-CREATE TABLE ticket (
-  id_ticket INT NOT NULL AUTO_INCREMENT,
-  id_orden INT NOT NULL,
-  id_estado_ticket INT NOT NULL,
-  descripcion VARCHAR(300) NOT NULL,  
-  fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_ticket`),
-  foreign key fk_ticket_orden (id_orden) references orden(id_orden),
-  foreign key fk_ticket_estado_ticket (id_estado_ticket) references estado_ticket(id_estado_ticket))
-  ENGINE = InnoDB;
-
-
 -- --- Sección de Inserción de Datos ---
 
 
@@ -252,22 +227,11 @@ INSERT INTO region (nombre_region, activo) VALUES
 ('Europa',true),
 ('Asia',true);
 
-INSERT INTO estado_ticket (estado_ticket, activo) VALUES 
-('Abierto',true),
-('Cerrado',true);
-
 INSERT INTO usuario (username, password, correo, ruta_imagen, activo) VALUES 
-('Admin', '$2a$10$P1.w58XvnaYQUQgZUCk4aO/RTRl8EValluCqB3S2VMLTbRt.tlre.', 'admin@fidegamestore.com', 'imagen', true),
-('Soporte', '$2a$10$P1.w58XvnaYQUQgZUCk4aO/RTRl8EValluCqB3S2VMLTbRt.tlre.', 'soporte@fidegamestore.com', 'imagen', true),
-('usuario1', '$2a$10$P1.w58XvnaYQUQgZUCk4aO/RTRl8EValluCqB3S2VMLTbRt.tlre.', 'usuario@gmail.com', 'imagen', true);
+('Admin', '$2a$10$P1.w58XvnaYQUQgZUCk4aO/RTRl8EValluCqB3S2VMLTbRt.tlre.', 'admin@fidegamestore.com', 'imagen', true);
 
 INSERT INTO usuario_rol (id_usuario, id_rol) VALUES 
-(1, 1),
-(1, 2),
-(1, 3),
-(2, 2),
-(2, 3),
-(3, 3);
+(1, 1);
 
 INSERT INTO producto (id_categoria, nombre_producto, ruta_imagen, activo) VALUES
 (1, 'Minecraft', 'https://imgproxy.eneba.games/HFctKs2s7yb7zhAs0t_IixbCiF7Ewpe_gj15SCBhQMY/rs:fit:300/ar:1/czM6Ly9wcm9kdWN0/cy5lbmViYS5nYW1l/cy9wcm9kdWN0cy93/NV9aR2wxaHJ2Unpu/THpTVlhUZW4yUjlZ/eE5SRkd3M0JZUk5Q/UlRQejJFLnBuZw', true),
@@ -276,40 +240,10 @@ INSERT INTO producto (id_categoria, nombre_producto, ruta_imagen, activo) VALUES
 (1, 'Doom Eternal', 'https://imgproxy.eneba.games/pQh-bQaRJ91XPQ_VDmGszXnlHDy6dgfYZidwUQExxuk/rs:fit:300/ar:1/czM6Ly9wcm9kdWN0/cy5lbmViYS5nYW1l/cy9wcm9kdWN0cy9T/VGl4MGZOMDlEdVM2/blVHSXpYMm9Nek5f/SVZySU9LS3REZC1L/YWN0ak13LmpwZWc', true),
 (2, 'Steam Wallet $50 Gift Card', 'https://imgproxy.eneba.games/-p8pcSxTQfuTnvjNiI9cQmYvI31g6ipRNoKbAG622gk/rs:fit:300/ar:1/czM6Ly9wcm9kdWN0/cy5lbmViYS5nYW1l/cy9wcm9kdWN0cy9l/MC1Odk9FeFlpMXdh/NkNFTk5ndzFZeEc3/SWVKZHJzSGRIekw0/dV9DVkkwLmpwZWc', true);
 
-INSERT INTO variante_producto (id_producto, id_region, id_plataforma) VALUES
-(1, 1, 5),
-(3, 2, 2),
-(2, 2, 1),
-(4, 3, 2),
-(2, 2, 1);
-
-INSERT INTO llave (llave, id_variante_producto, activo) VALUES
-('AAAA-AAAA-AAAA', 1, true),
-('BBBB-BBBB-BBBB', 2, true),
-('CCCC-CCCC-CCCC', 3, true),
-('DDDD-DDDD-DDDD', 4, false),
-('EEEE-EEEE-EEEE', 5, false);
-
-INSERT INTO anuncio (id_variante_producto, precio, activo) VALUES
-(1, 55.50, true),
-(2, 10.00, true),
-(3, 30.00, true),
-(4, 59.90, true);
-
 INSERT INTO estado_orden (estado_orden, activo) VALUES
 ('Completada', true),
 ('En disputa', true),
 ('Reembolsada', true);
-
-INSERT INTO orden (id_usuario, id_estado_orden, precio_total) VALUES
-(3, 1, 60.00),
-(3, 2, 10.00);
-
-INSERT INTO orden_llave (id_orden, id_llave, precio_pagado) VALUES
-(2, 5, 60.00);
-
-INSERT INTO ticket (id_orden, id_estado_ticket, descripcion) VALUES
-(2, 1, 'Intente usar la tarjeta de regalo en mi consola de Play Station pero no funciono');
 
 -- Rutas que NO requieren rol
 INSERT INTO ruta (nombre_ruta, requiere_rol) VALUES
@@ -323,6 +257,15 @@ INSERT INTO ruta (nombre_ruta, requiere_rol) VALUES
 ('/js/**',false),
 ('/css/**',false),
 ('/webjars/**',false);
+
+-- Rutas que SI requieren rol
+INSERT INTO ruta (nombre_ruta, requiere_rol, id_rol) VALUES
+('/orden/listado/**',true, 1),
+('/usuario/listado/**',true, 1),
+('/usuario/perfil/**',true, 3),
+('/orden/ordenesUsuario/**',true, 3),
+('/orden/productosOrden/**',true, 1),
+('/orden/productosOrdenUsuario/**',true, 3);
 
 INSERT INTO constante (atributo, valor) VALUES
 ('Tipo de cambio dolar', '443.00');

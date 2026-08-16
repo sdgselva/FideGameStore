@@ -6,6 +6,7 @@ import com.fidegamestore.domain.Usuario;
 import com.fidegamestore.service.CarritoService;
 import com.fidegamestore.service.OrdenService;
 import com.fidegamestore.service.UsuarioService;
+import com.fidegamestore.service.CorreoService;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import org.springframework.stereotype.Controller;
@@ -22,11 +23,13 @@ public class CarritoController {
     private final CarritoService carritoService;
     private final UsuarioService usuarioService;
     private final OrdenService ordenService;
+    private final CorreoService correoService;
 
-    public CarritoController(CarritoService carritoService, UsuarioService usuarioService, OrdenService ordenService) {
+    public CarritoController(CarritoService carritoService, UsuarioService usuarioService, OrdenService ordenService, CorreoService correoService) {
         this.carritoService = carritoService;
         this.usuarioService = usuarioService;
         this.ordenService = ordenService;
+        this.correoService = correoService;
     }
 
     // --- 1. MOSTRAR EL CARRITO ---
@@ -47,7 +50,7 @@ public class CarritoController {
             HttpSession session,
             Model model) {
         try {
-            
+
             System.out.println("Entro al carrito");
             // 1. Obtener el carrito de la sesión
             List<Item> carrito = carritoService.obtenerCarrito(session);
@@ -88,28 +91,28 @@ public class CarritoController {
         redirectAttributes.addFlashAttribute("mensaje", "Anuncio eliminado del carrito.");
         return "redirect:/carrito/listado";
     }
-    
+
     @GetMapping("/carrito/modificar/{idAnuncio}")
     public String modificar(
             @PathVariable("idAnuncio") Integer idAnuncio,
             HttpSession session,
             Model model) {
-        
+
         // 1. Obtener la lista del carrito de la sesión
         List<Item> carrito = carritoService.obtenerCarrito(session);
-        
+
         // 2. Buscar el ítem en la lista del carrito
         Item item = carritoService.buscarItem(carrito, idAnuncio);
-        
+
         if (item == null) {
             // Manejar el caso de que el ítem no esté en el carrito
             System.out.println("Hubo problemas");
-            return "redirect:/carrito/listado"; 
+            return "redirect:/carrito/listado";
         }
-        
+
         // 3. Pasar el ítem encontrado (con su cantidad actual) al modelo
         model.addAttribute("item", item);
-        
+
         // 4. Retornar la vista
         return "/carrito/modifica";
     }
@@ -138,18 +141,24 @@ public class CarritoController {
     @GetMapping("/ordenar/carrito")
     public String ordenarCarrito(HttpSession session, RedirectAttributes redirectAttributes) {
         System.out.println("Va a ordenar");
-        
+
         try {
             List<Item> carrito = carritoService.obtenerCarrito(session);
 
             // Obtención del usuario autenticado*
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String username = auth.getName();
-            System.out.println("El username es:"+username);
+            System.out.println("El username es:" + username);
             Usuario usuario = usuarioService.getUsuarioPorUsername(username).get();
 
             // 1. La lógica transaccional ocurre en el servicio
             Orden orden = carritoService.procesarCompra(carrito, usuario);
+
+            // Obtener la orden nuevamente con todos sus detalles
+            orden = ordenService.getOrdenConDetalle(orden.getIdOrden());
+
+            // Enviar correo con los detalles y las claves
+            correoService.enviarCorreoOrden(orden);
 
             // 2. Limpiar el carrito de la sesión después de una compra exitosa
             carritoService.limpiarCarrito(session);
@@ -157,7 +166,7 @@ public class CarritoController {
             // 3. Pasar el ID de la orden como Flash Attribute
             redirectAttributes.addFlashAttribute("idOrden", orden.getIdOrden());
             redirectAttributes.addFlashAttribute("mensaje", "Compra procesada con éxito. Orden Nro: " + orden.getIdOrden());
-            
+
             // 4. Redirigir a una ruta nueva para ver la orden
             System.out.println("Ver la Orden");
             return "redirect:/carrito/verOrden";
@@ -168,18 +177,18 @@ public class CarritoController {
             return "redirect:/carrito/listado";
         }
     }
-    
+
     // Nuevo método para mostrar la orden
     @GetMapping("/carrito/verOrden")
     public String verOrden(@ModelAttribute("idOrden") Integer idOrden, Model model) {
         if (idOrden == null) {
             // Si no se pasó el ID por flash, redirigir a donde lista de ordens o index
-            return "redirect:/index"; 
+            return "redirect:/index";
         }
-        
+
         // 1. Obtener la orden COMPLETA (incluyendo ordenLlaves)        
-        Orden orden = ordenService.getOrdenConDetalle(idOrden); 
-        
+        Orden orden = ordenService.getOrdenConDetalle(idOrden);
+
         model.addAttribute("orden", orden);
         return "/carrito/verOrden"; // Nombre del archivo Thymeleaf
     }
