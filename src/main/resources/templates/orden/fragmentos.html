@@ -90,9 +90,64 @@
                                         </span>
                                     </td>
                                     <td>[[${#temporals.format(o.fechaModificacion, 'dd-MM-yyyy hh:mm')}]]</td>
-                                    <td sec:authorize="hasRole('ROLE_Administrador')">
+                                    <td>
                                         <div class="action-buttons">
                                             <a th:href="@{/orden/productosOrden/}+${o.idOrden}" class="btn btn-primary">
+                                                <i class="fas fa-list-ul"></i> [[#{orden.ver_ordenes}]]
+                                            </a>  
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center p-2" th:if="${ordenes == null or ordenes.empty}">
+                        <span>[[#{lista.vacia}]]</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Este fragmento permite mostrar la lista de elementos y genera el boton para acceder la pagina pare ver la lista de productos por orden -->
+<section th:fragment="ordenesUsuario" class="p-3">
+    <!-- Tabla que da la lista de elementos -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header header-tablas">
+                    <h4 class="mb-0">[[#{orden.listado}]]</h4>
+                </div>
+                <div class="card-body">
+                    <div th:if="${ordenes != null and !ordenes.empty}">
+                        <table class="table table-striped table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>[[#{orden.precio_total}]]</th>
+                                    <th>[[#{orden.fecha_creacion}]]</th>
+                                    <th>[[#{orden.estado}]]</th>
+                                    <th>[[#{orden.fecha_modificacion}]]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="o : ${ordenes}">
+                                    <td>[[${o.idOrden}]]</td>
+                                    <td>[[${#numbers.formatCurrency(o.precioTotal)}]]</td>
+                                    <td>[[${#temporals.format(o.fechaCreacion, 'dd-MM-yyyy hh:mm')}]]</td>
+                                    <td>
+                                        <span class="badge"
+                                              th:classappend="${o.estadoOrden.estadoOrden == 'Completada'} ? ' bg-success' :
+                                              (${o.estadoOrden.estadoOrden == 'En disputa'} ? ' bg-warning text-dark' :
+                                              ' bg-danger')">
+                                            [[${o.estadoOrden.estadoOrden}]]
+                                        </span>
+                                    </td>
+                                    <td>[[${#temporals.format(o.fechaModificacion, 'dd-MM-yyyy hh:mm')}]]</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <a th:href="@{/orden/productosOrdenUsuario/}+${o.idOrden}" class="btn btn-primary">
                                                 <i class="fas fa-list-ul"></i> [[#{orden.ver_ordenes}]]
                                             </a>  
                                         </div>
@@ -177,5 +232,71 @@
     </div>
 </section>
 
+<!-- Este fragmento permite mostrar la lista de elementos y los botonoes de modificar y eliminar -->
+<section th:fragment="productosOrdenUsuario" class="p-3">
+    <!-- Tabla que da la lista de elementos -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header header-tablas">
+                    <h4 class="mb-0">[[#{orden.listado}]]</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4 border-bottom pb-3">
+                        <div class="col-md-6">
+                            <h5>[[#{orden.detalles}]]</h5>
+                            <p><strong>[[#{orden.numero}]]:</strong> <span th:text="${orden.idOrden}">1001</span></p>
+                            <p><strong>[[#{orden.fecha}]]:</strong> <span th:text="${#temporals.format(orden.fechaCreacion, 'dd-MM-yyyy hh:mm')}">2024-10-25</span></p>
+                        </div>
+                        <div class="col-md-6 text-md-right">
+                            <h5>[[#{orden.cliente}]]</h5>
+                            <p><strong>[[#{usuario.username}]]:</strong> <span th:text="${orden.usuario.username}">Juan Perez</span></p>
+                            <p><strong>[[#{usuario.correo}]]:</strong> <span th:text="${orden.usuario.correo}">correo@ejemplo.com</span></p>
+                        </div>
+                    </div>
+
+                    <h5>[[#{orden.anuncios.adquiridos}]]</h5>
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered table-striped">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>[[#{anuncio.descripcion}]]</th>
+                                    <th class="text-center">[[#{orden.region}]]</th>
+                                    <th class="text-center">[[#{orden.plataforma}]]</th>
+                                    <th class="text-center">[[#{carrito.cantidad}]]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="ordenLlave, iterStat : ${orden.ordenLlaves}">
+                                    <td th:text="${ordenLlave.llave.varianteProducto.producto.nombreProducto}">Laptop Xtreme</td>
+                                    <td th:text="${ordenLlave.llave.varianteProducto.region.nombreRegion}">Laptop Xtreme</td>
+                                    <td th:text="${ordenLlave.llave.varianteProducto.plataforma.nombrePlataforma}">Laptop Xtreme</td>
+                                    <td class="text-end" th:text="${#numbers.formatCurrency(ordenLlave.precioPagado)}">$520.00</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>[[#{carrito.totalCompra}]]:</strong></td>
+                                    <td class="text-end text-success">
+                                        <strong class="h5" th:text="${#numbers.formatCurrency(orden.precioTotal)}">$1,040.00</strong>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="text-center">
+                        <a th:href="@{/orden/ordenesUsuario}" class="btn btn-success btn-lg d-print-none">
+                            <i class='fas fa-reply'></i> [[#{accion.regresar}]]
+                        </a>
+                        <button onclick="window.print()" class="btn btn-primary btn-lg d-print-none">
+                            <i class='fas fa-print'></i> [[#{accion.imprimir}]]
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 
