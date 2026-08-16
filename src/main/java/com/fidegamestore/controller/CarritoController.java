@@ -157,8 +157,16 @@ public class CarritoController {
             // Obtener la orden nuevamente con todos sus detalles
             orden = ordenService.getOrdenConDetalle(orden.getIdOrden());
 
-            // Enviar correo con los detalles y las claves
-            correoService.enviarCorreoOrden(orden);
+            System.out.println("Orden cargada con detalles.");
+
+            // 3. Intentar enviar correo
+            try {
+                correoService.enviarCorreoOrden(orden);
+                System.out.println("Correo enviado correctamente.");
+            } catch (Exception e) {
+                System.out.println("ERROR AL ENVIAR EL CORREO:");
+                e.printStackTrace();
+            }
 
             // 2. Limpiar el carrito de la sesión después de una compra exitosa
             carritoService.limpiarCarrito(session);
@@ -172,8 +180,13 @@ public class CarritoController {
             return "redirect:/carrito/verOrden";
 
         } catch (RuntimeException e) {
-            // Captura errores de stock, carrito vacío o de la transacción
-            redirectAttributes.addFlashAttribute("error", "Error al procesar la compra: " + e.getMessage());
+            e.printStackTrace();
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "Error al procesar la compra: " + e.getMessage()
+            );
+
             return "redirect:/carrito/listado";
         }
     }
