@@ -52,7 +52,7 @@
 
                             <h5 class="card-title text-center fw-bold text-truncate mb-0"
                                 th:text="${a.varianteProducto.producto.nombreProducto}">
-                                Nombre del producto
+                                [[#{anuncio.producto}]]
                             </h5>
                         </div>
                         <!-- Información del producto -->
@@ -64,7 +64,7 @@
                                     <i class="fas fa-globe-americas me-1"></i>
 
                                     <span th:text="${a.varianteProducto.region.nombreRegion}">
-                                        Región
+                                        [[#{anuncio.region}]]
                                     </span>
                                 </span>
                                 <!-- Plataforma -->
@@ -72,7 +72,7 @@
                                     <i class="fas fa-gamepad me-1"></i>
 
                                     <span th:text="${a.varianteProducto.plataforma.nombrePlataforma}">
-                                        Plataforma
+                                        [[#{anuncio.platforma}]]
                                     </span>
                                 </span>
                             </div>
@@ -80,11 +80,11 @@
                             <div class="text-center mt-3">
 
                                 <span class="text-muted small d-block">
-                                    Precio
+                                    [[#{anuncio.precio}]]
                                 </span>
 
                                 <span class="fs-3 fw-bold text-success"
-                                      th:text="${a.precio}">
+                                      th:text="${#numbers.formatCurrency(a.precio)}">
                                     ₡0.00
                                 </span>
                             </div>

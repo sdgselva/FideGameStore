@@ -30,7 +30,6 @@ public class AnuncioController {
     private final ProductoService productoService;
     private final MessageSource messageSource;
 
-    // (Spring inyecta automáticamente)
     public AnuncioController(AnuncioService anuncioService, CategoriaService categoriaService,
             RegionService regionService, PlataformaService plataformaService,
             ProductoService productoService, MessageSource messageSource) {
@@ -48,6 +47,7 @@ public class AnuncioController {
 
         var lista = anuncioService.getAllAnuncios();
         model.addAttribute("anuncios", lista);
+        model.addAttribute("totalAnuncios", lista.size());
 
         var categorias = categoriaService.getCategorias(true);
         model.addAttribute("categorias", categorias);
@@ -87,13 +87,13 @@ public class AnuncioController {
         try {
             anuncioService.delete(idAnuncio);
         } catch (IllegalArgumentException e) {
-            titulo = "error"; // Captura la excepción de argumento inválido para el mensaje de "no existe"
+            titulo = "error"; 
             detalle = "anuncio.error01";
         } catch (IllegalStateException e) {
-            titulo = "error"; // Captura la excepción de estado ilegal para el mensaje de "datos asociados"
+            titulo = "error";  
             detalle = "anuncio.error02";
         } catch (Exception e) {
-            titulo = "error"; // Captura cualquier otra excepción inesperada
+            titulo = "error";
             detalle = "anuncio.error03";
         }
 
@@ -140,7 +140,7 @@ public class AnuncioController {
         model.addAttribute("idCategoriaActual", idCategoria);
         var categoriaOptional = categoriaService.getCategoria(idCategoria);
         if (categoriaOptional.isEmpty()) {
-            //Puede ser que no se exista la categoria buscada...
+
             model.addAttribute("anuncios", java.util.Collections.emptyList());
         } else {
             var categoria = categoriaOptional.get();

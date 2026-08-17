@@ -9,9 +9,5 @@ public interface VarianteProductoRepository extends JpaRepository<VarianteProduc
 
     public List<VarianteProducto> findAll();
 
-    Optional<VarianteProducto> findByProducto_IdProductoAndRegion_IdRegionAndPlataforma_IdPlataforma(
-            Integer idProducto,
-            Integer idRegion,
-            Integer idPlataforma
-    );
+    Optional<VarianteProducto> findByProducto_IdProductoAndRegion_IdRegionAndPlataforma_IdPlataforma(Integer idProducto, Integer idRegion, Integer idPlataforma);
 }

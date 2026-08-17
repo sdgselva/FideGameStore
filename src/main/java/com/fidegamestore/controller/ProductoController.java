@@ -64,13 +64,13 @@ public class ProductoController {
         try {
             productoService.delete(idProducto);
         } catch (IllegalArgumentException e) {
-            titulo = "error"; // Captura la excepción de argumento inválido para el mensaje de "no existe"
+            titulo = "error";
             detalle = "producto.error01";
         } catch (IllegalStateException e) {
-            titulo = "error"; // Captura la excepción de estado ilegal para el mensaje de "datos asociados"
+            titulo = "error";
             detalle = "producto.error02";
         } catch (Exception e) {
-            titulo = "error"; // Captura cualquier otra excepción inesperada
+            titulo = "error"; 
             detalle = "producto.error03";
         }
 
@@ -117,7 +117,7 @@ public class ProductoController {
         model.addAttribute("idCategoriaActual", idCategoria);
         var categoriaOptional = categoriaService.getCategoria(idCategoria);
         if (categoriaOptional.isEmpty()) {
-            //Puede ser que no se exista la categoria buscada...
+         
             model.addAttribute("productos", java.util.Collections.emptyList());
         } else {
             var categoria = categoriaOptional.get();

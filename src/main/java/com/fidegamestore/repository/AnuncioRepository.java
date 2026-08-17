@@ -27,10 +27,7 @@ public interface AnuncioRepository extends JpaRepository<Anuncio, Integer> {
     
     boolean existsByVarianteProducto_IdVarianteProducto(Integer idVarianteProducto);
 
-    boolean existsByVarianteProducto_IdVarianteProductoAndIdAnuncioNot(
-            Integer idVarianteProducto,
-            Integer idAnuncio
-    );
+    boolean existsByVarianteProducto_IdVarianteProductoAndIdAnuncioNot(Integer idVarianteProducto,Integer idAnuncio);
     
    
 }

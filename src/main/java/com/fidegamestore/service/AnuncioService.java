@@ -92,26 +92,16 @@ public class AnuncioService {
         boolean nuevo = anuncio.getIdAnuncio() == null;
 
         Producto producto = productoRepository.findById(idProducto)
-                .orElseThrow(() -> new IllegalArgumentException(
-                "Producto no encontrado"
-        ));
+                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
 
         Region region = regionRepository.findById(idRegion)
-                .orElseThrow(() -> new IllegalArgumentException(
-                "Región no encontrada"
-        ));
+                .orElseThrow(() -> new IllegalArgumentException("Región no encontrada"));
 
         Plataforma plataforma = plataformaRepository.findById(idPlataforma)
-                .orElseThrow(() -> new IllegalArgumentException(
-                "Plataforma no encontrada"
-        ));
+                .orElseThrow(() -> new IllegalArgumentException("Plataforma no encontrada"));
 
         VarianteProducto variante = varianteProductoRepository
-                .findByProducto_IdProductoAndRegion_IdRegionAndPlataforma_IdPlataforma(
-                        idProducto,
-                        idRegion,
-                        idPlataforma
-                )
+                .findByProducto_IdProductoAndRegion_IdRegionAndPlataforma_IdPlataforma(idProducto, idRegion, idPlataforma)
                 .orElseGet(() -> {
 
                     VarianteProducto nuevaVariante = new VarianteProducto();
@@ -123,25 +113,15 @@ public class AnuncioService {
                     return varianteProductoRepository.save(nuevaVariante);
                 });
 
-        // ==========================================
-        // VERIFICAR ANUNCIO DUPLICADO
-        // ==========================================
         boolean duplicado;
 
         if (nuevo) {
 
-            duplicado = anuncioRepository
-                    .existsByVarianteProducto_IdVarianteProducto(
-                            variante.getIdVarianteProducto()
-                    );
+            duplicado = anuncioRepository.existsByVarianteProducto_IdVarianteProducto(variante.getIdVarianteProducto());
 
         } else {
 
-            duplicado = anuncioRepository
-                    .existsByVarianteProducto_IdVarianteProductoAndIdAnuncioNot(
-                            variante.getIdVarianteProducto(),
-                            anuncio.getIdAnuncio()
-                    );
+            duplicado = anuncioRepository.existsByVarianteProducto_IdVarianteProductoAndIdAnuncioNot(variante.getIdVarianteProducto(),anuncio.getIdAnuncio());
         }
 
         if (duplicado) {
@@ -150,9 +130,6 @@ public class AnuncioService {
             );
         }
 
-        // ==========================================
-        // GUARDAR ANUNCIO
-        // ==========================================
         anuncio.setVarianteProducto(variante);
 
         if (nuevo) {
@@ -162,10 +139,6 @@ public class AnuncioService {
         anuncio.setExistencias(1);
         anuncioRepository.save(anuncio);
         
-
-        // ==========================================
-        // CREAR LLAVE SOLO AL CREAR
-        // ==========================================
         if (nuevo) {
 
             Llave llave = new Llave();

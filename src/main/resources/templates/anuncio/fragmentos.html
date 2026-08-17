@@ -13,10 +13,10 @@
                       class='was-validated' enctype="multipart/form-data" method="post">
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label>[[#{anuncio.variante-producto}]]</label>
+                            <label>[[#{anuncio.producto}]]</label>
                             <select name="idProducto" class="form-select" required>
                                 <option value="" selected disabled>
-                                    Seleccione una categoría
+                                    [[#{dropdown.seleccion}]]
                                 </option>
                                 <option th:each="producto : ${productos}"
                                         th:value="${producto.idProducto}"
@@ -25,10 +25,10 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label>[[#{anuncio.variante-producto}]]</label>
+                            <label>[[#{anuncio.region}]]</label>
                             <select name="idRegion" class="form-select" required>
                                 <option value="" selected disabled>
-                                    Seleccione una categoría
+                                    [[#{dropdown.seleccion}]]
                                 </option>
 
                                 <option th:each="region : ${regiones}"
@@ -38,10 +38,10 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label>[[#{anuncio.variante-producto}]]</label>
+                            <label>[[#{anuncio.plataforma}]]</label>
                             <select name="idPlataforma" class="form-select" required>
                                 <option value="" selected disabled>
-                                    Seleccione una categoría
+                                    [[#{dropdown.seleccion}]]
                                 </option>
 
                                 <option th:each="plataforma : ${plataformas}"
@@ -51,7 +51,7 @@
                             </select>
                         </div>
                         <div class='mb-3'>
-                            <label>[[#{producto.nombre}]]</label>
+                            <label>[[#{anuncio.precio}]]</label>
                             <input type="number" name='precio' class='form-control'/>                                   
                         </div>
                         <div class='mb-3'>
@@ -80,7 +80,7 @@
                    th:classappend="${idCategoriaActual == null} ? 'active'"
                    class="nav-link" 
                    aria-current="page">
-                    [[#{consultas.todas}]]
+                    [[#{anuncio.todas}]]
                 </a>
             </li>
             <li th:each="c : ${categorias}" class="nav-item">
@@ -155,7 +155,7 @@
                                     <td>[[${a.varianteProducto.producto.categoria.nombreCategoria}]]</td>
                                     <td>[[${a.varianteProducto.region.nombreRegion}]]</td>
                                     <td>[[${a.varianteProducto.plataforma.nombrePlataforma}]]</td>
-                                    <td>[[${a.precio}]]</td>
+                                    <td>[[${#numbers.formatCurrency(a.precio)}]]</td>
                                     <td><img th:src="@{${a.varianteProducto.producto.rutaImagen}}" alt="noData" width="120" height="120" class="object-fit-cover"/></td>
                                     <td th:text="${a.activo} ? 'Activa':'Inactiva'"></td>
                                     <td sec:authorize="hasRole('ROLE_Administrador')">
@@ -256,7 +256,7 @@
                                     class="form-select" 
                                     required>
                                 <option value="" selected disabled>
-                                    Seleccione una categoría
+                                    [[#{dropdown.seleccion}]]
                                 </option>
                                 <option th:each="producto : ${productos}"
                                         th:value="${producto.idProducto}"
@@ -270,7 +270,7 @@
                                     class="form-select" 
                                     required>
                                 <option value="" selected disabled>
-                                    Seleccione una categoría
+                                    [[#{dropdown.seleccion}]]
                                 </option>
 
                                 <option th:each="region : ${regiones}"
@@ -285,7 +285,7 @@
                                     class="form-select" 
                                     required>
                                 <option value="" selected disabled>
-                                    Seleccione una categoría
+                                    [[#{dropdown.seleccion}]]
                                 </option>
 
                                 <option th:each="plataforma : ${plataformas}"
@@ -295,7 +295,7 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="editarPrecio" class="form-label"> [[#{precio}]]</label>
+                            <label for="editarPrecio" class="form-label"> [[#{anuncio.precio}]]</label>
                             <input type="number"
                                    id="editarPrecio"
                                    name="precio"

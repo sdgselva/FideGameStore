@@ -31,7 +31,6 @@ public class CarritoService {
         this.llaveRepository = llaveRepository;
     }   
 
-    // --- 1. Gestión de Sesión ---
     public List<Item> obtenerCarrito(HttpSession session) {
         @SuppressWarnings("unchecked")
         List<Item> carrito = (List<Item>) session.getAttribute(ATTRIBUTE_CARRITO);
@@ -46,11 +45,10 @@ public class CarritoService {
     }
 
     public void agregarAnuncio(List<Item> carrito, Integer idAnuncio) {
-        // 1. Buscar el anuncio en BD
+
         Anuncio anuncio = anuncioRepository.findById(idAnuncio)
             .orElseThrow(() -> new RuntimeException("Anuncio no encontrado."));
 
-        // 2. Buscar si el item ya existe en el carrito
         Optional<Item> itemExistente = carrito.stream()
             .filter(i -> i.getAnuncio().getIdAnuncio().equals(idAnuncio))
             .findFirst();
@@ -61,18 +59,16 @@ public class CarritoService {
             Item item = itemExistente.get();
             int nuevaCantidad = item.getCantidad() + cantidad;
             
-            // 3. (CRÍTICO) Validación de Stock
             if (nuevaCantidad > anuncio.getExistencias()) {
                  throw new RuntimeException("Stock insuficiente para agregar " + cantidad + " unidades.");
             }
             item.setCantidad(nuevaCantidad);
         } else {
-            // 4. (Nuevo Item) Validación de Stock
+
             if (cantidad > anuncio.getExistencias()) {
                  throw new RuntimeException("Stock insuficiente para agregar " + cantidad + " unidades.");
             }
             
-            // 5. Crear y añadir nuevo Item (Composición)
             Item nuevoItem = new Item();
             nuevoItem.setAnuncio(anuncio);
             nuevoItem.setCantidad(cantidad);
@@ -87,13 +83,13 @@ public class CarritoService {
         }
         
         return carrito.stream()
-                .filter(item -> item.getAnuncio().getIdAnuncio().equals(idAnuncio)) // Filtra por el ID
-                .findFirst()                                                          // Obtiene el primer elemento
-                .orElse(null);                                                        // Retorna null si no lo encuentra
+                .filter(item -> item.getAnuncio().getIdAnuncio().equals(idAnuncio)) 
+                .findFirst()                                                         
+                .orElse(null);                                                       
     }
     
     public void eliminarItem(List<Item> carrito, Integer idAnuncio) {
-        // Usar List.removeIf es una forma concisa de eliminar por condición
+
         carrito.removeIf(item -> item.getAnuncio().getIdAnuncio().equals(idAnuncio));
     }
     
@@ -123,8 +119,8 @@ public class CarritoService {
             return 0;
         }
         return carrito.stream()
-                .mapToInt(Item::getCantidad) // Mapea cada Item al valor de su campo 'cantidad'
-                .sum();                      // Suma todos los valores
+                .mapToInt(Item::getCantidad)
+                .sum();                     
     }
     
     public BigDecimal calcularTotal(List<Item> carrito) {
@@ -149,7 +145,6 @@ public class CarritoService {
             throw new RuntimeException("El carrito está vacío para procesar la compra.");
         }
         
-        // 1. CREAR Y PERSISTIR FACTURA
         Orden orden = new Orden();
         EstadoOrden estadoOrden = new EstadoOrden();
         estadoOrden.setIdEstadoOrden(1);
@@ -159,17 +154,16 @@ public class CarritoService {
         orden.setEstadoOrden(estadoOrden);
         orden.setFechaCreacion(LocalDateTime.now());
         orden.setFechaModificacion(LocalDateTime.now());
-        orden = ordenRepository.save(orden); // Persistir para obtener el idOrden
+        orden = ordenRepository.save(orden); 
 
-        // 2. CREAR Y PERSISTIR LINEAS DE VENTA (OrdenLlave) y ACTUALIZAR STOCK
         for (Item item : carrito) {
-            // a. Verificar stock final antes de persistir (doble chequeo)
+
             Anuncio anuncio = anuncioRepository.findById(item.getAnuncio().getIdAnuncio()).get();
             if (item.getCantidad() > anuncio.getExistencias()) {
                 throw new RuntimeException("Fallo en la compra: El anuncio " + anuncio.getVarianteProducto().getProducto().getNombreProducto() + " ya no tiene suficiente stock.");
             }
             
-            // b. Crear entidad OrdenLlave (Línea de detalle)
+
             OrdenLlave ordenLlave = new OrdenLlave();
             Llave llave = llaveRepository.findByIdVarianteProducto(item.getAnuncio().getVarianteProducto().getIdVarianteProducto());
             
@@ -180,13 +174,11 @@ public class CarritoService {
             ordenLlave.setFechaModificacion(LocalDateTime.now());
             ordenLlaveRepository.save(ordenLlave);
             
-            // c. Actualizar inordenLlaverio (Stock)
+
             anuncio.setExistencias(anuncio.getExistencias() - item.getCantidad());
             anuncio.setActivo(false);
             anuncioRepository.save(anuncio);
         }
-
-        // 3. Limpiar carrito (El controller se encargará de esto)
         
         return orden;
     }

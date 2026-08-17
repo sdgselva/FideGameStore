@@ -86,8 +86,8 @@
                 <ul class="navbar-nav" sec:authorize="hasRole('ROLE_Usuario')">  
                     <!-- Panel para controlar los productos del sitio -->
                     <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_Usuario')">
-                    <li class="nav-item px-2"><a class="nav-link" th:href="@{/orden/ordenesUsuario}">[[#{admin.ordenes}]]</a></li>
-                    <li class="nav-item px-2"><a class="nav-link" th:href="@{/usuario/perfil}">[[#{perfil}]]</a></li>
+                    <li class="nav-item px-2"><a class="nav-link" th:href="@{/orden/ordenesUsuario}">[[#{usuario.mis.ordenes}]]</a></li>
+                    <li class="nav-item px-2"><a class="nav-link" th:href="@{/usuario/perfil}">[[#{usuario.mi.perfil}]]</a></li>
                 </ul>
 
                 <ul class="navbar-nav">
@@ -97,6 +97,7 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" th:href="@{/(lang=es)}">Español</a></li>
                             <li><a class="dropdown-item" th:href="@{/(lang=en)}">English</a></li>
+                            <li><a class="dropdown-item" th:href="@{/(lang=fr)}">Français</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -129,7 +130,7 @@
                 </ul>  
                 <div id="resultBlock" class="ms-3">
                     <a th:href="@{/carrito/listado}" class="btn btn-primary text-white">
-                        <i class="fas fa-shopping-cart me-1"></i> Ver carrito
+                        <i class="fas fa-shopping-cart me-1"></i> [[#{carrito}]]
                     </a>
                 </div>   
             </div>
