@@ -24,8 +24,8 @@ public class RegistroService {
         this.usuarioService = usuarioService;
         this.messageSource = messageSource;
         this.constanteService = constanteService;
-        Optional<Constante> constante =constanteService.findByAtributo("servidor.http");
-        servidor = constante.isPresent()?constante.get().getValor():"localhost";
+        //Optional<Constante> constante =constanteService.findByAtributo("servidor.http");
+        servidor = constanteService.findByAtributo("servidor.http").map(Constante::getValor).orElse("http://localhost");
     }
     
     //Este método se usa en el enlace del correo enviado...
