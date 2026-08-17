@@ -32,7 +32,7 @@ public class CarritoController {
         this.correoService = correoService;
     }
 
-    // --- 1. MOSTRAR EL CARRITO ---
+    //Obtener el carrito
     @GetMapping("/carrito/listado")
     public String listado(HttpSession session, Model model) {
         List<Item> carrito = carritoService.obtenerCarrito(session);
@@ -43,7 +43,7 @@ public class CarritoController {
         return "/carrito/listado";
     }
 
-    // --- 2. AGREGAR PRODUCTO AL CARRITO ---
+    //Agregar detalles de anuncio al carrito
     @PostMapping("/carrito/agregar")
     public ModelAndView agregar(
             @RequestParam("idAnuncio") Integer idAnuncio,
@@ -52,32 +52,24 @@ public class CarritoController {
         try {
 
             System.out.println("Entro al carrito");
-            // 1. Obtener el carrito de la sesión
+            
             List<Item> carrito = carritoService.obtenerCarrito(session);
-
-            // 2. Ejecutar la lógica de negocio (el Service asume cantidad = 1)
             carritoService.agregarAnuncio(carrito, idAnuncio);
-
-            // 3. Guardar el carrito actualizado en la sesión
             carritoService.guardarCarrito(session, carrito);
-
-            // 4. Recalcular y actualizar el Model con los datos necesarios
             model.addAttribute("carritoTotal", carritoService.calcularTotal(carrito));
             model.addAttribute("listaItems", carrito);
 
-            // 5. Retornar el fragmento HTML
             return new ModelAndView("/carrito/fragmentos :: verCarrito", model.asMap());
 
         } catch (RuntimeException e) {
-            // 6. Manejo de errores (p. ej., stock insuficiente, anuncio no existe)
+
             model.addAttribute("errorMensaje", e.getMessage());
 
-            // Retorna un fragmento de error genérico que muestre el mensaje
             return new ModelAndView("/errores/fragmentos :: errorMensaje", model.asMap());
         }
     }
 
-    // --- 3. ELIMINAR ITEM DEL CARRITO ---
+    //Borrar info del carrito
     @PostMapping("/carrito/eliminar/{idAnuncio}")
     public String eliminarItem(
             @PathVariable("idAnuncio") Integer idAnuncio,
@@ -117,7 +109,7 @@ public class CarritoController {
         return "/carrito/modifica";
     }
 
-    // --- 4. ACTUALIZAR CANTIDAD DESDE LA VISTA ---
+    //Actualizar Carrito
     @PostMapping("/carrito/actualizar")
     public String actualizarCantidad(
             @RequestParam("anuncio.idAnuncio") Integer idAnuncio,
@@ -137,7 +129,7 @@ public class CarritoController {
         return "redirect:/carrito/listado";
     }
 
-    // --- 5. PROCESAR COMPRA (CHECKOUT) ---
+    //Finalizar compra
     @GetMapping("/ordenar/carrito")
     public String ordenarCarrito(HttpSession session, RedirectAttributes redirectAttributes) {
         System.out.println("Va a ordenar");
@@ -145,29 +137,24 @@ public class CarritoController {
         try {
             List<Item> carrito = carritoService.obtenerCarrito(session);
 
-            // Obtención del usuario autenticado*
+            // Obtener usuario
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String username = auth.getName();
             System.out.println("El username es:" + username);
             Usuario usuario = usuarioService.getUsuarioPorUsername(username).get();
 
-            // 1. La lógica transaccional ocurre en el servicio
             Orden orden = carritoService.procesarCompra(carrito, usuario);
 
-            // Obtener la orden nuevamente con todos sus detalles
             orden = ordenService.getOrdenConDetalle(orden.getIdOrden());
 
             System.out.println("Orden cargada con detalles.");
 
-
-            // 2. Limpiar el carrito de la sesión después de una compra exitosa
+            //Limpiar carrito
             carritoService.limpiarCarrito(session);
 
-            // 3. Pasar el ID de la orden como Flash Attribute
             redirectAttributes.addFlashAttribute("idOrden", orden.getIdOrden());
             redirectAttributes.addFlashAttribute("mensaje", "Compra procesada con éxito. Orden Nro: " + orden.getIdOrden());
 
-            // 4. Redirigir a una ruta nueva para ver la orden
             System.out.println("Ver la Orden");
             return "redirect:/carrito/verOrden";
 
@@ -198,6 +185,6 @@ public class CarritoController {
         correoService.enviarCorreoOrden(orden);
 
         model.addAttribute("orden", orden);
-        return "/carrito/verOrden"; // Nombre del archivo Thymeleaf
+        return "/carrito/verOrden";
     }
 }

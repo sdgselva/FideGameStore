@@ -94,35 +94,19 @@ public class UsuarioController {
             HttpServletResponse response) {
 
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute(
-                    "error",
-                    messageSource.getMessage(
-                            "usuario.error04",
-                            null,
-                            Locale.getDefault()
-                    )
-            );
+            redirectAttributes.addFlashAttribute("error",messageSource.getMessage("usuario.error04", null, Locale.getDefault()));
 
             return "redirect:/usuario/perfil";
         }
 
-        usuarioService.saveSelf(
-                usuario.getIdUsuario(),
-                usuario.getUsername(),
-                usuario.getCorreo(),
-                imagenFile
-        );
+        usuarioService.saveSelf(usuario.getIdUsuario(), usuario.getUsername(), usuario.getCorreo(), imagenFile);
 
         redirectAttributes.addFlashAttribute(
                 "todoOk",
                 "Información actualizada. Por favor, inicie sesión nuevamente."
         );
 
-        logoutHandler.logout(
-                request,
-                response,
-                SecurityContextHolder.getContext().getAuthentication()
-        );
+        logoutHandler.logout(request, response, SecurityContextHolder.getContext().getAuthentication());
 
         return "redirect:/login";
     }
@@ -132,24 +116,16 @@ public class UsuarioController {
             RedirectAttributes redirectAttributes) {
         try {
             usuarioService.delete(idUsuario);
-            redirectAttributes.addFlashAttribute("todoOk",
-                    messageSource.getMessage("mensaje.eliminado", null,
-                            Locale.getDefault()));
+            redirectAttributes.addFlashAttribute("todoOk", messageSource.getMessage("mensaje.eliminado", null, Locale.getDefault()));
         } catch (IllegalArgumentException e) {
             // Captura argumento inválido para el mensaje de "no existe"
-            redirectAttributes.addFlashAttribute("error",
-                    messageSource.getMessage("usuario.error01", null,
-                            Locale.getDefault()));
+            redirectAttributes.addFlashAttribute("error", messageSource.getMessage("usuario.error01", null, Locale.getDefault()));
         } catch (IllegalStateException e) {
             // Captura estado ilegal para el mensaje de "datos asociados"
-            redirectAttributes.addFlashAttribute("error",
-                    messageSource.getMessage("usuario.error02", null,
-                            Locale.getDefault()));
+            redirectAttributes.addFlashAttribute("error", messageSource.getMessage("usuario.error02", null, Locale.getDefault()));
         } catch (NoSuchMessageException e) {
             // Captura cualquier otra excepción inesperada
-            redirectAttributes.addFlashAttribute("error",
-                    messageSource.getMessage("usuario.error03", null,
-                            Locale.getDefault()));
+            redirectAttributes.addFlashAttribute("error", messageSource.getMessage("usuario.error03", null, Locale.getDefault()));
         }
         return "redirect:/usuario/listado";
     }
@@ -159,9 +135,7 @@ public class UsuarioController {
             Model model, RedirectAttributes redirectAttributes) {
         Optional<Usuario> usuarioOpt = usuarioService.getUsuario(idUsuario);
         if (usuarioOpt.isEmpty()) {
-            redirectAttributes.addFlashAttribute("error",
-                    "El usuario no fue encontrado.");
-            return "redirect:/usuario/listado";
+            redirectAttributes.addFlashAttribute("error", "El usuario no fue encontrado."); return "redirect:/usuario/listado";
         }
         Usuario usuario = usuarioOpt.get();
         usuario.setPassword("");

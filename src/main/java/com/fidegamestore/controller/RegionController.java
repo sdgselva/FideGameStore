@@ -52,13 +52,13 @@ public class RegionController {
         try {
             regionService.delete(idRegion);
         } catch (IllegalArgumentException e) {
-            titulo = "error"; // Captura la excepción de argumento inválido para el mensaje de "no existe"
+            titulo = "error"; 
             detalle = "region.error01";
         } catch (IllegalStateException e) {
-            titulo = "error"; // Captura la excepción de estado ilegal para el mensaje de "datos asociados"
+            titulo = "error";
             detalle = "region.error02";
         } catch (Exception e) {
-            titulo = "error";  // Captura cualquier otra excepción inesperada
+            titulo = "error";  
             detalle = "region.error03";
         }
         redirectAttributes.addFlashAttribute(titulo, messageSource.getMessage(detalle, null, Locale.getDefault()));

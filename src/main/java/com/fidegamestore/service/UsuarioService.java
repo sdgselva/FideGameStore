@@ -126,26 +126,17 @@ public class UsuarioService {
     }
 
     @Transactional
-    public void saveSelf(
-            Integer idUsuario,
-            String username,
-            String correo,
-            MultipartFile imagenFile) {
+    public void saveSelf(Integer idUsuario, String username, String correo, MultipartFile imagenFile) {
 
         Usuario usuario = usuarioRepository.findById(idUsuario)
-                .orElseThrow(()
-                        -> new IllegalArgumentException("Usuario no encontrado."));
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado."));
 
         usuario.setUsername(username);
         usuario.setCorreo(correo);
 
         if (imagenFile != null && !imagenFile.isEmpty()) {
             try {
-                String rutaImagen = firebaseStorageService.uploadImage(
-                        imagenFile,
-                        "usuario",
-                        usuario.getIdUsuario()
-                );
+                String rutaImagen = firebaseStorageService.uploadImage(imagenFile, "usuario", usuario.getIdUsuario());
 
                 usuario.setRutaImagen(rutaImagen);
 

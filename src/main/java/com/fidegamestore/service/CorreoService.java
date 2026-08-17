@@ -29,9 +29,7 @@ public class CorreoService {
         this.correoRemitente = correoRemitente;
         this.nombreRemitente = nombreRemitente;
 
-        this.restClient = RestClient.builder()
-                .baseUrl("https://api.brevo.com/v3")
-                .build();
+        this.restClient = RestClient.builder().baseUrl("https://api.brevo.com/v3").build();
     }
 
     public void enviarCorreoHtml(
@@ -207,10 +205,6 @@ public class CorreoService {
 
     public void enviarCorreoOrden(Orden orden) {
         String html = generarHtmlOrden(orden);
-        enviarCorreoHtml(
-                orden.getUsuario().getCorreo(),
-                "Orden #" + orden.getIdOrden() + " - FideGameStore",
-                html
-        );
+        enviarCorreoHtml(orden.getUsuario().getCorreo(),"Orden #" + orden.getIdOrden() + " - FideGameStore",html);
     }
 }

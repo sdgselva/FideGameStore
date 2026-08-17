@@ -49,7 +49,7 @@ public class OrdenController {
             model.addAttribute("orden", orden);
             return "/orden/productosOrden";
         } catch (NoSuchElementException e) {
-            // Captura la excepción de 'no encontrado' del servicio
+            
             redirectAttributes.addFlashAttribute("error", messageSource.getMessage("orden.error01", null, Locale.getDefault()));
             return "redirect:/orden/listado";
         }
@@ -62,7 +62,7 @@ public class OrdenController {
             model.addAttribute("orden", orden);
             return "/orden/productosOrdenUsuario";
         } catch (NoSuchElementException e) {
-            // Captura la excepción de 'no encontrado' del servicio
+            
             redirectAttributes.addFlashAttribute("error", messageSource.getMessage("orden.error01", null, Locale.getDefault()));
             return "redirect:/orden/productosOrden";
         }

@@ -9,12 +9,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class IndexController {
- // Las últimas versiones de Spring, recomiendan utilziar final y contructor en lugar de @autowired
     
     private final AnuncioService anuncioService;
     private final CategoriaService categoriaService;
     
-    // (Spring inyecta automáticamente)
     public IndexController(AnuncioService anuncioService, CategoriaService categoriaService) {
         this.anuncioService = anuncioService;
         this.categoriaService = categoriaService;
@@ -34,7 +32,7 @@ public class IndexController {
         model.addAttribute("idCategoriaActual", idCategoria);
         var categoriaOptional = categoriaService.getCategoria(idCategoria);
         if (categoriaOptional.isEmpty()) {
-            //Puede ser que no se exista la categoria buscada...
+
             model.addAttribute("anuncios", java.util.Collections.emptyList());
         } else {
             var categoria = categoriaOptional.get();

@@ -33,7 +33,7 @@ public class SecurityConfig {
             }
             requests.anyRequest().authenticated();
         });
-        http.formLogin(form -> form // Configuración de formulario de login
+        http.formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/", true)
@@ -45,9 +45,9 @@ public class SecurityConfig {
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
                 .permitAll()
-        ).exceptionHandling(exceptions -> exceptions // Manejo de excepciones
+        ).exceptionHandling(exceptions -> exceptions 
                 .accessDeniedPage("/acceso_denegado")
-        ).sessionManagement(session -> session // Configuración de sesiones
+        ).sessionManagement(session -> session
                 .maximumSessions(1)
                 .maxSessionsPreventsLogin(false)
         );
