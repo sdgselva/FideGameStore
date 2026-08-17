@@ -1,6 +1,6 @@
 # Etapa 1: Compilación (Build)
 # Usamos una imagen de Maven con JDK 21 para compilar
-FROM maven:3.9.6-eclipse-temurin-26-alpine AS build
+FROM maven:3.9-eclipse-temurin-26 AS build
 WORKDIR /app
 
 # Copiamos solo el pom.xml primero para aprovechar la caché de capas de Docker
@@ -13,7 +13,7 @@ RUN mvn clean package -DskipTests
 
 # Etapa 2: Imagen de Ejecución (Runtime)
 # Usamos JRE en lugar de JDK para reducir el tamaño y mejorar la seguridad
-FROM eclipse-temurin:26-jre-alpine
+FROM eclipse-temurin:26-jre
 WORKDIR /app
 
 # Creamos un usuario de sistema para no ejecutar la app como root (Seguridad)
@@ -25,7 +25,7 @@ USER spring:spring
 COPY --from=build /app/target/*.jar app.jar
 
 # Exponemos el puerto definido en tu application.properties (80)
-EXPOSE 80
+EXPOSE 80   
 
 # Parámetros de optimización de memoria para contenedores
 ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", "-jar", "app.jar"]
